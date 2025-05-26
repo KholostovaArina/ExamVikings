@@ -1,5 +1,6 @@
 package com.mycompany.examvikings.GUI;
 
+import com.mycompany.examvikings.SateliteStorage;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -33,7 +34,8 @@ public class MainFrame {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
         cardPanel.add(DrakkarPanel.create(), "DRAKKAR");
-        cardPanel.add(SatelitePanel.create(), "SATELLITE");
+        SateliteStorage storage = new SateliteStorage();
+        cardPanel.add(SatelitePanel.create(storage), "SATELLITE");
         cardPanel.add(RoutePanel.create(), "ROUTE");
         cardLayout.show(cardPanel, "DRAKKAR");
 

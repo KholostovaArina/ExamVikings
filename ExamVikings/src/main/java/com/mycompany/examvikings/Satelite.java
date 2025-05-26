@@ -1,5 +1,107 @@
 package com.mycompany.examvikings;
 
-public class Satelite {
+public final class Satelite {
+    private int id;
+    private String name;
+    private String gender;
+    private String clan;          
+    private int age;
+    private double activityCoefficient; // от 0.1 до 2.0
+    private String photoMiniPath;
+    private String photoPath;    
+
+    // Конструктор
+    public Satelite(int id, String name, String gender, String clan, int age, double activityCoefficient, String photoMiniPath, String photoPath) {
+        this.id = id;
+        this.name = name;
+        this.gender = gender;
+        this.clan = clan;
+        this.age = age;
+        setActivityCoefficient(activityCoefficient);
+        this.photoMiniPath = photoMiniPath;
+        this.photoPath = this.photoPath;
+    }
+
+    // Геттеры и сеттеры
+    public String getPhotoMiniPath() {
+        return photoMiniPath;
+    }
+
+    public void setPhotoMiniPath(String name) {
+        this.photoMiniPath = photoMiniPath;
+    }
     
+    // Геттеры и сеттеры
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String name) {
+        this.photoPath = photoPath;
+    }    
+    
+    public int getId(){
+        return id;
+    }
+    
+    public void setId(int id){
+        this.id = id;
+    }
+    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getClan() {
+        return clan;
+    }
+
+    public void setClan(String clan) {
+        this.clan = clan;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        if (age < 0) {
+            throw new IllegalArgumentException("Возраст не может быть отрицательным");
+        }
+        this.age = age;
+    }
+
+    public double getActivityCoefficient() {
+        return activityCoefficient;
+    }
+
+    public void setActivityCoefficient(double activityCoefficient) {
+        if (activityCoefficient < 0.1 || activityCoefficient > 2.0) {
+            throw new IllegalArgumentException("Коэффициент активности должен быть в диапазоне от 0.1 до 2.0");
+        }
+        this.activityCoefficient = activityCoefficient;
+    }
+
+    @Override
+    public String toString() {
+        return "Спутник{" +
+                "имя='" + name + '\'' +
+                ", пол='" + gender + '\'' +
+                ", род='" + clan + '\'' +
+                ", возраст=" + age +
+                ", коэффициент активности=" + activityCoefficient +
+                '}';
+    }
 }
