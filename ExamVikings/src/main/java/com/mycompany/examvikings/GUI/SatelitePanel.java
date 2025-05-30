@@ -1,10 +1,10 @@
 package com.mycompany.examvikings.GUI;
 
-import com.mycompany.examvikings.Satelite;
-import com.mycompany.examvikings.SateliteStorage;
+import com.mycompany.examvikings.Viking;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
+import java.util.List;
 
 public class SatelitePanel {
     private static final int THUMBNAIL_SIZE = 50; // Квадратные миниатюры 50x50
@@ -16,9 +16,9 @@ public class SatelitePanel {
     private static JLabel infoLabel;
     private static JLabel photoLabel;
 
-    public static JSplitPane create(SateliteStorage storage) {
+    public static JSplitPane create(List<Viking> vikings) {
         initializeComponents();
-        return createSplitPane(storage);
+        return createSplitPane(vikings);
     }
 
     private static void initializeComponents() {
@@ -27,8 +27,8 @@ public class SatelitePanel {
         photoLabel = createPhotoLabel();
     }
 
-    private static JSplitPane createSplitPane(SateliteStorage storage) {
-        JPanel leftPanel = createThumbnailsPanel(storage);
+    private static JSplitPane createSplitPane(List<Viking> vikings) {
+        JPanel leftPanel = createThumbnailsPanel(vikings);
         JPanel rightPanel = createDetailsPanel();
 
         JSplitPane splitPane = new JSplitPane(
@@ -41,15 +41,15 @@ public class SatelitePanel {
         return splitPane;
     }
 
-    private static JPanel createThumbnailsPanel(SateliteStorage storage) {
+    private static JPanel createThumbnailsPanel(List<Viking> vikings) {
         // Используем GridLayout с 5 колонками и автоматическим количеством строк
         JPanel gridPanel = new JPanel(new GridLayout(0, COLUMNS, 5, 5));
         gridPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         gridPanel.setBackground(new Color(245, 245, 245));
 
         // Добавляем миниатюры
-        for (Satelite satelite : storage.getAllVikings()) {
-            gridPanel.add(createThumbnailButton(satelite));
+        for (Viking v : vikings) {
+            gridPanel.add(createThumbnailButton(v));
         }
 
         // Обертка с заголовком
@@ -67,7 +67,7 @@ public class SatelitePanel {
         return wrapper;
     }
 
-    private static JButton createThumbnailButton(Satelite satelite) {
+    private static JButton createThumbnailButton(Viking v) {
         JButton button = new JButton();
         // Фиксируем размер кнопки для квадратных миниатюр
         button.setPreferredSize(new Dimension(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
@@ -78,7 +78,7 @@ public class SatelitePanel {
         button.setFocusPainted(false);
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        ImageIcon icon = new ImageIcon(satelite.getPhotoMiniPath());
+        ImageIcon icon = new ImageIcon(v.getPhotoMiniPath());
         if (icon.getImageLoadStatus() == MediaTracker.COMPLETE) {
             button.setIcon(resizeIcon(icon, THUMBNAIL_SIZE, THUMBNAIL_SIZE));
         } else {
@@ -86,7 +86,7 @@ public class SatelitePanel {
             button.setIcon(new ImageIcon(createPlaceholderImage()));
         }
 
-        button.addActionListener(e -> updateSatelliteInfo(satelite));
+        button.addActionListener(e -> updateSatelliteInfo(v));
         addHoverEffect(button);
 
         return button;
@@ -167,7 +167,7 @@ public class SatelitePanel {
         splitPane.setBackground(new Color(210, 210, 210));
     }
 
-    private static void updateSatelliteInfo(Satelite satelite) {
+    private static void updateSatelliteInfo(Viking satelite) {
         nameLabel.setText(satelite.getName());
 
         ImageIcon icon = new ImageIcon(satelite.getPhotoPath());

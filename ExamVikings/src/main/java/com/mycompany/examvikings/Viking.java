@@ -1,6 +1,6 @@
 package com.mycompany.examvikings;
 
-public final class Satelite {
+public final class Viking {
     private int id;
     private String name;
     private String gender;
@@ -11,7 +11,7 @@ public final class Satelite {
     private String photoPath;    
 
     // Конструктор
-    public Satelite(int id, String name, String gender, String clan, int age, double activityCoefficient, String photoMiniPath, String photoPath) {
+    public Viking(int id, String name, String gender, String clan, int age, double activityCoefficient, String photoMiniPath, String photoPath) {
         this.id = id;
         this.name = name;
         this.gender = gender;

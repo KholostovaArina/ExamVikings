@@ -1,6 +1,7 @@
 package com.mycompany.examvikings.GUI;
 
-import com.mycompany.examvikings.SateliteStorage;
+import com.mycompany.examvikings.SQLReader;
+import com.mycompany.examvikings.Viking;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -34,8 +35,8 @@ public class MainFrame {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
         cardPanel.add(DrakkarPanel.create(), "DRAKKAR");
-        SateliteStorage storage = new SateliteStorage();
-        cardPanel.add(SatelitePanel.create(storage), "SATELLITE");
+        java.util.List<Viking> vikings = SQLReader.readVikings();
+        cardPanel.add(SatelitePanel.create(vikings), "SATELLITE");
         cardPanel.add(RoutePanel.create(), "ROUTE");
         cardLayout.show(cardPanel, "DRAKKAR");
 

@@ -9,9 +9,7 @@ public class SQLReader {
         List<City> cities = new ArrayList<>();
         String sql = "SELECT id, name, latitude, longitude FROM cities";
 
-        try (Connection conn = SQLConnector.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        try (Connection conn = SQLConnector.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 int id = rs.getInt("id");
@@ -25,4 +23,29 @@ public class SQLReader {
         }
         return cities;
     }
+
+    public static List<Viking> readVikings() {
+        List<Viking> vikings = new ArrayList<>();
+        String sql = "SELECT id, name, gender, clan, age, activity_coefficient, photo_mini_path, photo_path FROM vicings";
+
+        try (Connection conn = SQLConnector.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String gender = rs.getString("gender");
+                String clan = rs.getString("clan");
+                int age = rs.getInt("age");
+                double activityCoefficient = rs.getDouble("activity_coefficient");
+                String photoMiniPath = rs.getString("photo_mini_path");
+                String photoPath = rs.getString("photo_path");
+
+                vikings.add(new Viking(id, name, gender, clan, age, activityCoefficient, photoMiniPath, photoPath));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return vikings;
+    }
+
 }
