@@ -7,6 +7,5 @@ public class ExamVikings {
 
     public static void main(String[] args) {
         MainFrame.createMainFrame();
-
     }
 }

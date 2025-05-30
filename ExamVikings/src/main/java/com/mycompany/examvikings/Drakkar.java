@@ -50,10 +50,10 @@ public class Drakkar {
     }
     
 
-    public static Image getImage(int id){
+    public Image getImage(){
         Image image = null;
         try {
-            image = ImageIO.read(Drakkar.class.getResourceAsStream("/драккар"+id+".png"));
+            image = ImageIO.read(Drakkar.class.getResourceAsStream("/драккар"+ id +".png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

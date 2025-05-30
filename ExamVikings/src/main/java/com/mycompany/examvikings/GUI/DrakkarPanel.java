@@ -1,102 +1,167 @@
 package com.mycompany.examvikings.GUI;
 
-import com.mycompany.examvikings.Drakkar;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Image;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextPane;
+import com.mycompany.examvikings.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.List;
+import javax.imageio.ImageIO;
 
 public class DrakkarPanel {
+    private static final int MAIN_IMAGE_SIZE = 250, ARROW_SIZE = 50;
+
+    private static List<Drakkar> drakkars;
+    private static int currentIndex = 0;
+    private static JLabel mainImageLabel, nameLabel;
+    private static JTextPane descriptionPane;
 
     public static JSplitPane create() {
-        // Основная левая панель с изображением и навигационными стрелками
-        JPanel leftCenterPanel = new JPanel(new BorderLayout());
-
-        // Загрузка изображений
-        ImageIcon leftIcon = new ImageIcon("/право.png");
-        ImageIcon rightIcon = new ImageIcon("/право.png");
-        ImageIcon originalIcon = new ImageIcon(Drakkar.getImage(1));
-
-        // Масштабирование изображений
-        Image scaledImage = originalIcon.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH);
-        Image left_scaledImage = leftIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        Image right_scaledImage = rightIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-
-        // JLabel для изображений
-        JLabel iconLabel = new JLabel(new ImageIcon(scaledImage));
-        JLabel leftArrowLabel = new JLabel(new ImageIcon(left_scaledImage));
-        JLabel rightArrowLabel = new JLabel(new ImageIcon(right_scaledImage));
-
-        // Панель для размещения трёх картинок горизонтально (с центрированием)
-        JPanel imagePanel = new JPanel();
-        imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.X_AXIS));
-        imagePanel.setAlignmentX(JPanel.CENTER_ALIGNMENT); // выравнивание по горизонтали
-
-        // Отступы
-        imagePanel.add(Box.createHorizontalGlue()); // равномерные отступы слева
-        imagePanel.add(leftArrowLabel);
-        imagePanel.add(Box.createRigidArea(new Dimension(20, 0)));
-        imagePanel.add(iconLabel);
-        imagePanel.add(Box.createRigidArea(new Dimension(20, 0)));
-        imagePanel.add(rightArrowLabel);
-        imagePanel.add(Box.createHorizontalGlue()); // и справа
-
-        // Центральная панель — картинки + кнопка
-        JPanel imageWithButtonPanel = new JPanel();
-        imageWithButtonPanel.setLayout(new BoxLayout(imageWithButtonPanel, BoxLayout.Y_AXIS));
-        imageWithButtonPanel.setBorder(BorderFactory.createEmptyBorder(100, 10, 10, 10));
-
-        imageWithButtonPanel.add(imagePanel);
-        imageWithButtonPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-
-        JButton iconButton = new JButton("Выбрать");
-        iconButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
-        imageWithButtonPanel.add(iconButton);
-
-        // Добавляем всё в основную левую панель
-        leftCenterPanel.add(imageWithButtonPanel, BorderLayout.NORTH); // чтобы не растягивалось вниз
-
-        // Правая панель с информацией
-        JPanel rightCenterPanel = new JPanel();
-        rightCenterPanel.setLayout(new BoxLayout(rightCenterPanel, BoxLayout.Y_AXIS));
-        rightCenterPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-
-        JLabel nameLabel = new JLabel("Драккар 'Морской волк'");
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        nameLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        rightCenterPanel.add(nameLabel);
-        rightCenterPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-
-        rightCenterPanel.add(new JLabel("Описание:"));
-        rightCenterPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-        JTextPane descriptionPane = new JTextPane();
-        descriptionPane.setText("Быстроходный драккар с дубовым корпусом, вместимостью 40 воинов. Оснащён квадратным парусом с красными полосами.");
-        descriptionPane.setEditable(false);
-        descriptionPane.setBackground(rightCenterPanel.getBackground());
-        descriptionPane.setPreferredSize(new Dimension(200, 100));
-        rightCenterPanel.add(new JScrollPane(descriptionPane));
-
-        // Сборка финального JSplitPane
-        JSplitPane centerSplitPane = new JSplitPane(
+        drakkars = DrakkarLoader.loadDrakkars();
+        JSplitPane splitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
-                leftCenterPanel,
-                rightCenterPanel
+                createImagePanel(),
+                createInfoPanel()
         );
-        centerSplitPane.setResizeWeight(0.8);
-        centerSplitPane.setDividerLocation(0.8);
+        splitPane.setResizeWeight(0.7);
+        splitPane.setDividerLocation(0.7);
+        updateDrakkarDisplay();
+        return splitPane;
+    }
 
-        return centerSplitPane;
+    private static JPanel createImagePanel() {
+        // Картинка с мягкой обводкой/фоном
+        JPanel imageWrapper = new JPanel(new GridBagLayout());
+        imageWrapper.setOpaque(false);
+
+        mainImageLabel = new JLabel();
+        mainImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        mainImageLabel.setOpaque(true);
+        mainImageLabel.setBackground(new Color(235,242,250));
+        mainImageLabel.setBorder(BorderFactory.createLineBorder(new Color(180,180,200), 2, true));
+        mainImageLabel.setPreferredSize(new Dimension(MAIN_IMAGE_SIZE, MAIN_IMAGE_SIZE));
+        imageWrapper.add(mainImageLabel);
+
+        JButton prev = navBtn("лево.png", () -> moveDrakkar(-1));
+        JButton next = navBtn("право.png", () -> moveDrakkar(1));
+
+        JPanel navPanel = new JPanel();
+        navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.X_AXIS));
+        navPanel.setOpaque(false);
+        navPanel.add(Box.createHorizontalGlue());
+        navPanel.add(prev);
+        navPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        navPanel.add(imageWrapper);
+        navPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        navPanel.add(next);
+        navPanel.add(Box.createHorizontalGlue());
+
+        // Кнопка под драккаром
+        JButton selectButton = new JButton("Выбрать этот драккар");
+        selectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(new Color(220, 225, 240));
+        panel.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+        panel.add(Box.createVerticalGlue());
+        panel.add(navPanel);
+        panel.add(Box.createRigidArea(new Dimension(0, 24)));
+        panel.add(selectButton);
+        panel.add(Box.createVerticalGlue());
+        return panel;
+    }
+
+    private static JButton navBtn(String icon, Runnable action) {
+        JButton btn = new JButton(loadImageIcon(icon, ARROW_SIZE) != null
+                ? loadImageIcon(icon, ARROW_SIZE)
+                : placeholderIcon(ARROW_SIZE, "←→"));
+        btn.setContentAreaFilled(false);
+        btn.setBorder(BorderFactory.createEmptyBorder());
+        btn.addActionListener(e -> action.run());
+        return btn;
+    }
+
+    private static JPanel createInfoPanel() {
+        nameLabel = new JLabel("", SwingConstants.CENTER);
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        nameLabel.setForeground(new Color(30, 53, 102));
+
+        descriptionPane = new JTextPane();
+        descriptionPane.setEditable(false);
+        descriptionPane.setContentType("text/html");
+        // Цвет подсветки убираем!
+        descriptionPane.setBackground(new Color(235,242,250));
+        descriptionPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        descriptionPane.setBorder(null);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(new Color(235,242,250));
+        panel.setBorder(BorderFactory.createEmptyBorder(32, 24, 32, 24));
+        panel.add(nameLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 24)));
+        panel.add(descriptionPane);
+        panel.add(Box.createVerticalGlue());
+        return panel;
+    }
+
+    private static void moveDrakkar(int delta) {
+        currentIndex = (currentIndex + delta + drakkars.size()) % drakkars.size();
+        updateDrakkarDisplay();
+    }
+
+    private static void updateDrakkarDisplay() {
+        if (drakkars == null || drakkars.isEmpty()) return;
+        Drakkar d = drakkars.get(currentIndex);
+        Image image = d.getImage();
+        mainImageLabel.setIcon(image != null
+                ? new ImageIcon(image.getScaledInstance(MAIN_IMAGE_SIZE, MAIN_IMAGE_SIZE, Image.SCALE_SMOOTH))
+                : placeholderIcon(MAIN_IMAGE_SIZE, "Драккар " + d.getId()));
+        nameLabel.setText(d.getName());
+        descriptionPane.setText(String.format(
+                "<html><div style='font-size:12pt; color:#2a2a2a; padding-top:10px'>"
+                        + "<b>ID:</b> %s<br>"
+                        + "<b>Тип:</b> %s<br>"
+                        + "<b>Вместимость:</b> %d воинов<br>"
+                        + "<b>Гребцы:</b> %d пар<br>"
+                        + "<b>Грузоподъемность:</b> %d тонн<br>"
+                        + "<b>Вес:</b> %.1f тонн"
+                        + "</div></html>",
+                d.getId(), getDrakkarType(d.getCrewCapacity()), d.getCrewCapacity(),
+                d.getRowersPairs(), d.getCargoCapacity(), d.getWeight()
+        ));
+    }
+
+    private static String getDrakkarType(int capacity) {
+        if (capacity >= 50) return "Боевой драккар (большой)";
+        if (capacity >= 30) return "Боевой драккар";
+        if (capacity >= 20) return "Торговый драккар";
+        return "Разведывательный драккар";
+    }
+
+    private static ImageIcon loadImageIcon(String path, int size) {
+        try {
+            if (path == null || path.isEmpty()) return null;
+            var is = DrakkarPanel.class.getResourceAsStream(path.startsWith("/") ? path : "/" + path);
+            if (is == null) return null;
+            Image img = ImageIO.read(is);
+            return img != null ? new ImageIcon(img.getScaledInstance(size, size, Image.SCALE_SMOOTH)) : null;
+        } catch (Exception e) { return null; }
+    }
+    private static ImageIcon placeholderIcon(int size, String txt) {
+        BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = img.createGraphics();
+        g.setColor(new Color(230, 236, 247));
+        g.fillOval(0, 0, size, size); // CIRCLE!
+        g.setColor(new Color(130, 130, 180));
+        g.drawOval(0, 0, size - 1, size - 1);
+        g.setFont(new Font("Arial", Font.PLAIN, size / 10));
+        FontMetrics f = g.getFontMetrics();
+        int x = (size - f.stringWidth(txt)) / 2, y = (size - f.getHeight()) / 2 + f.getAscent();
+        g.setColor(new Color(60, 60, 80));
+        g.drawString(txt, x, y);
+        g.dispose();
+        return new ImageIcon(img);
     }
 }
