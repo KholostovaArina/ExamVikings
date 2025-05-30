@@ -1,5 +1,6 @@
 package com.mycompany.examvikings.GUI;
 
+import com.mycompany.examvikings.Drakkar;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -24,7 +25,7 @@ public class DrakkarPanel {
         // Загрузка изображений
         ImageIcon leftIcon = new ImageIcon("/право.png");
         ImageIcon rightIcon = new ImageIcon("/право.png");
-        ImageIcon originalIcon = new ImageIcon("/фото.png");
+        ImageIcon originalIcon = new ImageIcon(Drakkar.getImage(1));
 
         // Масштабирование изображений
         Image scaledImage = originalIcon.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH);
@@ -70,8 +71,6 @@ public class DrakkarPanel {
         rightCenterPanel.setLayout(new BoxLayout(rightCenterPanel, BoxLayout.Y_AXIS));
         rightCenterPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        rightCenterPanel.add(new JLabel("Имя драккара:"));
-        rightCenterPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         JLabel nameLabel = new JLabel("Драккар 'Морской волк'");
         nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
