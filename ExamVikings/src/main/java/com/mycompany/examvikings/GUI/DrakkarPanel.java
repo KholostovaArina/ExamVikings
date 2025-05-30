@@ -22,9 +22,9 @@ public class DrakkarPanel {
         JPanel leftCenterPanel = new JPanel(new BorderLayout());
 
         // Загрузка изображений
-        ImageIcon leftIcon = new ImageIcon("C:\\Users\\GOSPOGA\\OneDrive\\Рабочий стол\\право.png");
-        ImageIcon rightIcon = new ImageIcon("C:\\Users\\GOSPOGA\\OneDrive\\Рабочий стол\\право.png");
-        ImageIcon originalIcon = new ImageIcon("C:\\Users\\GOSPOGA\\Downloads\\фото.png");
+        ImageIcon leftIcon = new ImageIcon("/право.png");
+        ImageIcon rightIcon = new ImageIcon("/право.png");
+        ImageIcon originalIcon = new ImageIcon("/фото.png");
 
         // Масштабирование изображений
         Image scaledImage = originalIcon.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH);

@@ -70,7 +70,7 @@ public class MainFrame {
         infoPanel.add(new JLabel("Выбранный элемент:"));
         infoPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         infoPanel.add(new JLabel("Драккар: Морской волк"));
-        infoPanel.add(new JLabel("Спутник: Odin-1"));
+        infoPanel.add(new JLabel("Спутник: Викинг 1"));
         infoPanel.add(new JLabel("Маршрут: Viking Route"));
 
         // Нижняя часть — кнопка "Готово"
@@ -87,17 +87,14 @@ public class MainFrame {
 
     // Обработчик для кнопок "Назад" и "Далее"
     private static ActionListener getNavigationAction(JButton backBtn, JButton nextBtn, boolean isNext) {
-        return new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int currentIndex = getCurrentCardIndex();
-                if (isNext && currentIndex < CARD_NAMES.length - 1) {
-                    cardLayout.show(cardPanel, CARD_NAMES[currentIndex + 1]);
-                } else if (!isNext && currentIndex > 0) {
-                    cardLayout.show(cardPanel, CARD_NAMES[currentIndex - 1]);
-                }
-                updateNavigationButtons(backBtn, nextBtn, CARD_NAMES[getCurrentCardIndex()]);
+        return (ActionEvent e) -> {
+            int currentIndex = getCurrentCardIndex();
+            if (isNext && currentIndex < CARD_NAMES.length - 1) {
+                cardLayout.show(cardPanel, CARD_NAMES[currentIndex + 1]);
+            } else if (!isNext && currentIndex > 0) {
+                cardLayout.show(cardPanel, CARD_NAMES[currentIndex - 1]);
             }
+            updateNavigationButtons(backBtn, nextBtn, CARD_NAMES[getCurrentCardIndex()]);
         };
     }
 

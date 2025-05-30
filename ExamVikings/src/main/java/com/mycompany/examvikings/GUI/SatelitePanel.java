@@ -3,197 +3,210 @@ package com.mycompany.examvikings.GUI;
 import com.mycompany.examvikings.Satelite;
 import com.mycompany.examvikings.SateliteStorage;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 public class SatelitePanel {
-
-    private static final JLabel nameLabel = new JLabel("Имя", SwingConstants.CENTER);
-    private static final JLabel infoLabel = new JLabel();
-    private static final JLabel photoLabel = new JLabel();
+    private static final int THUMBNAIL_SIZE = 50; // Квадратные миниатюры 50x50
+    private static final int MAIN_PHOTO_SIZE = 250;
+    private static final int COLUMNS = 5; // 5 колонок
+    private static final double SPLIT_RATIO = 0.7;
+    
+    private static JLabel nameLabel;
+    private static JLabel infoLabel;
+    private static JLabel photoLabel;
 
     public static JSplitPane create(SateliteStorage storage) {
-        // Левая панель с мини-фотками
-        JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        leftPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 10));
-        leftPanel.setBackground(new Color(245, 245, 245));
+        initializeComponents();
+        return createSplitPane(storage);
+    }
 
-        JLabel listLabel = new JLabel("Спутники", SwingConstants.CENTER);
-        listLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        listLabel.setForeground(new Color(30, 30, 30));
-        leftPanel.add(listLabel);
-        leftPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+    private static void initializeComponents() {
+        nameLabel = createNameLabel();
+        infoLabel = createInfoLabel();
+        photoLabel = createPhotoLabel();
+    }
 
-        JPanel miniPhotosPanel = new JPanel(new GridLayout(0, 1, 10, 10));
-        miniPhotosPanel.setBackground(new Color(245, 245, 245));
+    private static JSplitPane createSplitPane(SateliteStorage storage) {
+        JPanel leftPanel = createThumbnailsPanel(storage);
+        JPanel rightPanel = createDetailsPanel();
 
-        for (Satelite satelite : storage.getAllVikings()) {
-            addMiniPhoto(miniPhotosPanel, satelite);
-        }
-
-        JScrollPane scrollPane = new JScrollPane(miniPhotosPanel);
-        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
-        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
-        leftPanel.add(scrollPane);
-
-        // Правая панель — детали
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        rightPanel.setBorder(new EmptyBorder(20, 25, 20, 25));
-        rightPanel.setBackground(Color.WHITE);
-
-        // Имя
-        nameLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        nameLabel.setAlignmentX(SwingConstants.CENTER);
-        nameLabel.setForeground(new Color(40, 40, 40));
-        nameLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
-        rightPanel.add(nameLabel);
-
-        // Фото
-        photoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        photoLabel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(180, 180, 180), 2),
-            BorderFactory.createEmptyBorder(10, 10, 10, 10)
-        ));
-        photoLabel.setPreferredSize(new Dimension(250, 250));
-        photoLabel.setMaximumSize(new Dimension(250, 250));
-        photoLabel.setMinimumSize(new Dimension(250, 250));
-        photoLabel.setBackground(new Color(248, 248, 248));
-        photoLabel.setOpaque(true);
-        photoLabel.setForeground(new Color(160, 160, 160));
-        photoLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
-        photoLabel.setText("<html><div style='text-align:center;'>Фото<br>недоступно</div></html>");
-        rightPanel.add(photoLabel);
-        rightPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-
-        // Информация
-        infoLabel.setText(getDefaultInfo());
-        infoLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        infoLabel.setForeground(new Color(50, 50, 50));
-        infoLabel.setAlignmentX(SwingConstants.LEFT);
-
-        JScrollPane infoScrollPane = new JScrollPane(infoLabel);
-        infoScrollPane.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220), 1));
-        infoScrollPane.setPreferredSize(new Dimension(250, 180));
-        infoScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        rightPanel.add(infoScrollPane);
-
-        // Сборка
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
-        splitPane.setResizeWeight(0.85); // 85% для левой панели
-        splitPane.setBorder(null);
-        splitPane.setDividerSize(8);
-        splitPane.setDividerLocation(0.7);
-
-        // Стилизация разделителя
-        // Установка цвета разделителя JSplitPane
-        UIDefaults dividerDefaults = new UIDefaults();
-        dividerDefaults.put("SplitPaneDivider.border", BorderFactory.createLineBorder(new Color(210, 210, 210)));
-        dividerDefaults.put("SplitPaneDivider.draggingColor", new Color(190, 190, 190));
-        dividerDefaults.put("SplitPaneDivider.background", new Color(210, 210, 210));
-
-// Применяем стили только к текущему сплитеру
-        splitPane.setUI(new BasicSplitPaneUI() {
-            @Override
-            public void installUI(JComponent c) {
-                super.installUI(c);
-                getDivider().setBorder(dividerDefaults.getBorder("SplitPaneDivider.border"));
-                getDivider().setBackground(dividerDefaults.getColor("SplitPaneDivider.background"));
-            }
-        });
-
+        JSplitPane splitPane = new JSplitPane(
+            JSplitPane.HORIZONTAL_SPLIT, 
+            new JScrollPane(leftPanel), 
+            rightPanel
+        );
+        
+        configureSplitPane(splitPane);
         return splitPane;
     }
 
-    private static void addMiniPhoto(JPanel panel, Satelite satelite) {
-        JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
-        wrapper.setPreferredSize(new Dimension(150, 150));
-        wrapper.setMaximumSize(new Dimension(150, 150));
-        wrapper.setMinimumSize(new Dimension(150, 150));
-        wrapper.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 200)),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-        wrapper.setBackground(Color.WHITE);
-        wrapper.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    private static JPanel createThumbnailsPanel(SateliteStorage storage) {
+        // Используем GridLayout с 5 колонками и автоматическим количеством строк
+        JPanel gridPanel = new JPanel(new GridLayout(0, COLUMNS, 5, 5));
+        gridPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        gridPanel.setBackground(new Color(245, 245, 245));
 
-        JButton button = new JButton();
-        ImageIcon icon = new ImageIcon(satelite.getPhotoMiniPath());
-
-        button.setPreferredSize(new Dimension(130, 130));
-        button.setMaximumSize(new Dimension(130, 130));
-        button.setMinimumSize(new Dimension(130, 130));
-        button.setContentAreaFilled(false);
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        button.setRolloverEnabled(true);
-
-        if (icon.getImageLoadStatus() == MediaTracker.COMPLETE) {
-            Image scaledImage = icon.getImage().getScaledInstance(130, 130, Image.SCALE_SMOOTH);
-            button.setIcon(new ImageIcon(scaledImage));
-        } else {
-            button.setText("Фото");
-            button.setFont(new Font("Segoe UI", Font.BOLD, 16));
-            button.setForeground(new Color(150, 150, 150));
+        // Добавляем миниатюры
+        for (Satelite satelite : storage.getAllVikings()) {
+            gridPanel.add(createThumbnailButton(satelite));
         }
 
-        button.addActionListener(e -> updateSelectedSatellite(satelite));
-
-        // Эффекты при наведении
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                wrapper.setBackground(new Color(245, 245, 245));
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                wrapper.setBackground(Color.WHITE);
-            }
-        });
-
-        wrapper.add(button);
-        panel.add(wrapper);
+        // Обертка с заголовком
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setBackground(new Color(245, 245, 245));
+        
+        JLabel title = new JLabel("Спутники", SwingConstants.CENTER);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        title.setForeground(new Color(30, 30, 30));
+        title.setBorder(BorderFactory.createEmptyBorder(5, 0, 10, 0));
+        
+        wrapper.add(title, BorderLayout.NORTH);
+        wrapper.add(gridPanel, BorderLayout.CENTER);
+        
+        return wrapper;
     }
 
-    private static void updateSelectedSatellite(Satelite satelite) {
+    private static JButton createThumbnailButton(Satelite satelite) {
+        JButton button = new JButton();
+        // Фиксируем размер кнопки для квадратных миниатюр
+        button.setPreferredSize(new Dimension(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
+        button.setMinimumSize(new Dimension(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
+        button.setMaximumSize(new Dimension(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
+        
+        button.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+        button.setFocusPainted(false);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        ImageIcon icon = new ImageIcon(satelite.getPhotoMiniPath());
+        if (icon.getImageLoadStatus() == MediaTracker.COMPLETE) {
+            button.setIcon(resizeIcon(icon, THUMBNAIL_SIZE, THUMBNAIL_SIZE));
+        } else {
+            button.setText("");
+            button.setIcon(new ImageIcon(createPlaceholderImage()));
+        }
+
+        button.addActionListener(e -> updateSatelliteInfo(satelite));
+        addHoverEffect(button);
+
+        return button;
+    }
+
+    // Создаем прозрачное изображение-заглушку
+    private static Image createPlaceholderImage() {
+        BufferedImage img = new BufferedImage(
+            THUMBNAIL_SIZE, THUMBNAIL_SIZE, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = img.createGraphics();
+        g2d.setColor(new Color(240, 240, 240));
+        g2d.fillRect(0, 0, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+        g2d.setColor(new Color(180, 180, 180));
+        g2d.drawRect(0, 0, THUMBNAIL_SIZE-1, THUMBNAIL_SIZE-1);
+        g2d.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        g2d.drawString("Фото", 10, THUMBNAIL_SIZE/2);
+        g2d.dispose();
+        return img;
+    }
+
+    // Остальные методы остаются без изменений
+    private static JPanel createDetailsPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(Color.WHITE);
+
+        panel.add(nameLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(photoLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        JScrollPane infoScroll = new JScrollPane(infoLabel);
+        infoScroll.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)));
+        infoScroll.setPreferredSize(new Dimension(MAIN_PHOTO_SIZE, 180));
+        panel.add(infoScroll);
+
+        return panel;
+    }
+
+    private static JLabel createNameLabel() {
+        JLabel label = new JLabel("Выберите спутника", SwingConstants.CENTER);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setForeground(new Color(40, 50, 50));
+        return label;
+    }
+
+    private static JLabel createPhotoLabel() {
+        JLabel label = new JLabel();
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 180, 180), 2),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        label.setPreferredSize(new Dimension(MAIN_PHOTO_SIZE, MAIN_PHOTO_SIZE));
+        label.setBackground(new Color(248, 253, 248));
+        label.setOpaque(true);
+        label.setForeground(new Color(180, 160, 160));
+        label.setFont(new Font("Segoe UI", Font.ITALIC, 14));
+        label.setText("<html><div style='text-align:center;'>Фото<br>недоступно</div></html>");
+        return label;
+    }
+
+    private static JLabel createInfoLabel() {
+        JLabel label = new JLabel(getDefaultInfo(), SwingConstants.CENTER);
+        label.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        label.setForeground(new Color(50, 50, 50));
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return label;
+    }
+
+    private static void configureSplitPane(JSplitPane splitPane) {
+        splitPane.setResizeWeight(SPLIT_RATIO);
+        splitPane.setDividerLocation(SPLIT_RATIO);
+        splitPane.setDividerSize(8);
+        splitPane.setBorder(null);
+        splitPane.setBackground(new Color(210, 210, 210));
+    }
+
+    private static void updateSatelliteInfo(Satelite satelite) {
         nameLabel.setText(satelite.getName());
 
-        // Обновляем большое фото
         ImageIcon icon = new ImageIcon(satelite.getPhotoPath());
         if (icon.getImageLoadStatus() == MediaTracker.COMPLETE) {
-            Image scaledImage = icon.getImage().getScaledInstance(
-                photoLabel.getWidth(), photoLabel.getHeight(),
-                Image.SCALE_SMOOTH
-            );
-            photoLabel.setIcon(new ImageIcon(scaledImage));
+            photoLabel.setIcon(resizeIcon(icon, MAIN_PHOTO_SIZE, MAIN_PHOTO_SIZE));
             photoLabel.setText("");
         } else {
             photoLabel.setIcon(null);
             photoLabel.setText("<html><div style='text-align:center;'>Фото<br>недоступно</div></html>");
         }
 
-        // Обновляем информацию
-        infoLabel.setText("""
-            <html>
-            <b>Пол:</b> %s<br>
-            <b>Род:</b> %s<br>
-            <b>Возраст:</b> %d лет<br>
-            <b>Коэффициент активности:</b> %.2f
-            </html>""".formatted(
-            satelite.getGender(),
-            satelite.getClan(),
-            satelite.getAge(),
-            satelite.getActivityCoefficient()
+        infoLabel.setText(String.format(
+            "<html><b>Пол:</b> %s<br><b>Род:</b> %s<br>" +
+            "<b>Возраст:</b> %d лет<br><b>Коэффициент активности:</b> %.2f</html>",
+            satelite.getGender(), satelite.getClan(),
+            satelite.getAge(), satelite.getActivityCoefficient()
         ));
     }
 
+    private static ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
+        Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
+    }
+
+    private static void addHoverEffect(JButton button) {
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(230, 230, 230));
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(null);
+            }
+        });
+    }
+
     private static String getDefaultInfo() {
-        return """
-            <html>
-            <div style='text-align:center; padding:20px;'>
-            Нажмите на мини-фотку,<br>
-            чтобы увидеть информацию о спутнике
-            </div>
-            </html>""";
+        return "<html><div style='text-align:center; padding:20px;'>" +
+               "Нажмите на миниатюру,<br>чтобы увидеть информацию о спутнике</div></html>";
     }
 }
