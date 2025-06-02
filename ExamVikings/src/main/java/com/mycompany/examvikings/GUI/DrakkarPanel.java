@@ -57,6 +57,11 @@ public class DrakkarPanel {
         // Кнопка под драккаром
         JButton selectButton = new JButton("Выбрать этот драккар");
         selectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        selectButton.addActionListener(e -> {
+            if (drakkars != null && !drakkars.isEmpty()) {
+                SelectionPanel.setSelectedDrakkar(drakkars.get(currentIndex));
+            }
+        });
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));

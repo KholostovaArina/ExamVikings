@@ -19,7 +19,9 @@ public class MainFrame {
         frame.setLocationRelativeTo(null);
 
         // Главная горизонтальная разбивка: слева — mainLeftPanel, справа — rightPanel
-        JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createMainLeftPanel(), createRightPanel());
+        JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                createMainLeftPanel(),
+                SelectionPanel.createRightPanel());
         mainSplitPane.setResizeWeight(0.7);
         mainSplitPane.setDividerLocation(0.7);
 
@@ -58,32 +60,6 @@ public class MainFrame {
         mainLeftPanel.add(bottomLeftPanel, BorderLayout.SOUTH);
 
         return mainLeftPanel;
-    }
-
-    // Создание правой части (панель с информацией + кнопка "Готово" снизу)
-    private static Component createRightPanel() {
-        JPanel rightPanel = new JPanel(new BorderLayout());
-
-        // Верхняя часть — отображение информации
-        JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-        infoPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
-        infoPanel.add(new JLabel("Выбранный элемент:"));
-        infoPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        infoPanel.add(new JLabel("Драккар: Морской волк"));
-        infoPanel.add(new JLabel("Спутник: Викинг 1"));
-        infoPanel.add(new JLabel("Маршрут: Viking Route"));
-
-        // Нижняя часть — кнопка "Готово"
-        JPanel bottomRightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton buttonReady = new JButton("Готово");
-        bottomRightPanel.add(buttonReady);
-
-        // Сборка правой панели
-        rightPanel.add(infoPanel, BorderLayout.CENTER);
-        rightPanel.add(bottomRightPanel, BorderLayout.SOUTH);
-
-        return rightPanel;
     }
 
     // Обработчик для кнопок "Назад" и "Далее"
