@@ -1,35 +1,34 @@
 package com.mycompany.examvikings.GUI;
 
 import com.mycompany.examvikings.*;
-import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.util.Set;
+import javax.swing.*;
 
 public class SelectionPanel {
     private static JLabel drakkarLabel;
     private static JLabel satelliteLabel;
-    private static JLabel routeLabel;
-    
+    public static JLabel routeLabel;
+
     public static Component createRightPanel() {
         JPanel rightPanel = new JPanel(new BorderLayout());
 
-        // Верхняя часть — отображение информации
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
-        
+
         infoPanel.add(new JLabel("Выбранный элемент:"));
         infoPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        
+
         drakkarLabel = new JLabel("Драккар: не выбран");
         satelliteLabel = new JLabel("Спутник: не выбран");
         routeLabel = new JLabel("Маршрут: не выбран");
-        
+
         infoPanel.add(drakkarLabel);
         infoPanel.add(satelliteLabel);
         infoPanel.add(routeLabel);
 
-        // Нижняя часть — кнопка "Готово"
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton buttonReady = new JButton("Готово");
         bottomPanel.add(buttonReady);
@@ -39,25 +38,38 @@ public class SelectionPanel {
 
         return rightPanel;
     }
-    
+
     public static void setSelectedSatellites(Set<Viking> vikings) {
-        if (vikings.isEmpty()) {
-            satelliteLabel.setText("Спутники:не выбраны");
+        if (vikings == null || vikings.isEmpty()) {
+            satelliteLabel.setText("<html><div style='text-align:left;'>Спутники: не выбраны</div></html>");
         } else {
-            StringBuilder sb = new StringBuilder("Спутники: ");
+            StringBuilder sb = new StringBuilder("<html><div style='text-align:left;'>Спутники:<ul style='margin:0; padding-left:20px;'>");
             for (Viking v : vikings) {
-                if (sb.length() > 10) sb.append(", ");
-                sb.append(v.getName());
+                sb.append("<li>").append(v.getName()).append("</li>");
             }
+            sb.append("</ul></div></html>");
             satelliteLabel.setText(sb.toString());
         }
     }
-    
+
     public static void setSelectedDrakkar(Drakkar drakkar) {
         if (drakkar != null) {
-            drakkarLabel.setText("Драккар:" + drakkar.getName());
+            drakkarLabel.setText("<html><div style='text-align:left;'>Драккар:<br>" + drakkar.getName() + "</div></html>");
         } else {
-            drakkarLabel.setText("Драккар: не выбран");
+            drakkarLabel.setText("<html><div style='text-align:left;'>Драккар: не выбран</div></html>");
+        }
+    }
+
+    public static void updateRouteLabel(List<String> route) {
+        if (route.isEmpty()) {
+            routeLabel.setText("<html><div style='text-align:left;'>Маршрут: не выбран</div></html>");
+        } else {
+            StringBuilder sb = new StringBuilder("<html><div style='text-align:left;'>Маршрут:<ul style='margin:0; padding-left:20px;'>");
+            for (String city : route) {
+                sb.append("<li>").append(city).append("</li>");
+            }
+            sb.append("</ul></div></html>");
+            routeLabel.setText(sb.toString());
         }
     }
 }
