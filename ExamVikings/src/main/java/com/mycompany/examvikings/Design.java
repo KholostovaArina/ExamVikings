@@ -1,13 +1,28 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.examvikings;
 
-/**
- *
- * @author GOSPOGA
- */
+import java.awt.*;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+
 public class Design {
+    private static Image rightImage;
+    private static Image leftImage;
     
+    static {
+        try {
+            rightImage = ImageIO.read(Design.class.getResourceAsStream("/право.png"));
+            leftImage = ImageIO.read(Design.class.getResourceAsStream("/лево.png"));
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static Image getLeftImage() {
+        return leftImage;
+    }
+    
+    public static Image getRightImage() {
+        return rightImage;
+    }
 }
