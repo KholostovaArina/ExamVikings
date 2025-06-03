@@ -1,6 +1,6 @@
 package com.mycompany.examvikings.GUI;
 
-import com.mycompany.examvikings.SQLReader;
+import Reading.SQLReader;
 import com.mycompany.examvikings.Viking;
 import javax.swing.*;
 import java.awt.*;

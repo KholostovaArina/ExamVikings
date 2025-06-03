@@ -1,5 +1,8 @@
-package com.mycompany.examvikings;
+package Reading;
 
+import Reading.SQLConnector;
+import com.mycompany.examvikings.City;
+import com.mycompany.examvikings.Viking;
 import java.sql.*;
 import java.util.*;
 
@@ -7,7 +10,7 @@ public class SQLReader {
 
     public static List<City> readCities() {
         List<City> cities = new ArrayList<>();
-        String sql = "SELECT id, name, latitude, longitude FROM cities";
+        String sql = "SELECT id, name, latitude, longitude, city_type, scale FROM cities";
 
         try (Connection conn = SQLConnector.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -16,7 +19,10 @@ public class SQLReader {
                 String name = rs.getString("name");
                 double latitude = rs.getDouble("latitude");
                 double longitude = rs.getDouble("longitude");
-                cities.add(new City(id, name, latitude, longitude));
+                String cityType = rs.getString("city_type");
+                int scale = rs.getInt("scale");
+
+                cities.add(new City(id, name, latitude, longitude, cityType, scale));
             }
         } catch (SQLException e) {
             e.printStackTrace();

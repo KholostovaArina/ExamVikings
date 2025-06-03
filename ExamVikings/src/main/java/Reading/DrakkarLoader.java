@@ -1,5 +1,7 @@
-package com.mycompany.examvikings;
+package Reading;
 
+import com.mycompany.examvikings.Drakkar;
+import com.mycompany.examvikings.DrakkarConfig;
 import java.io.IOException;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;

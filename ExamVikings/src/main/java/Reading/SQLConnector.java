@@ -1,4 +1,4 @@
-package com.mycompany.examvikings;
+package Reading;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
