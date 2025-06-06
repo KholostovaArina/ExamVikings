@@ -5,16 +5,30 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Report {
+    private static double food = 0; //1 мера - 10 дней = 240 часов
+    private static int slaves = 0;
 
     public static void doReport(Set<Viking> vikings, List<City> cityList, Drakkar drakkar) {
         System.out.println("=============Report================");
+        
+        food = 2* vikings.size();
 
         City startCity = cityList.get(0);
         City currentCity = startCity;
+        double time;
 
         for (int i = 1; i < cityList.size(); i++) {
             City nextCity = cityList.get(i);
-            System.out.println(calculateTime(currentCity, nextCity, vikings, drakkar));
+            time = calculateTime(currentCity, nextCity, vikings, drakkar);
+            System.out.println( "---time   "+time);
+            food -= (vikings.size()+slaves)*time/240;// eat food
+            System.out.println(" food " + food);
+            System.out.println(" slaves " + slaves);   
+            System.out.println("Probability? "+ isSuccessfulAttack(nextCity, vikings));
+            if (isSuccessfulAttack(nextCity, vikings)){
+                food += 10 * nextCity.getScale();
+                slaves +=2 * nextCity.getScale();
+            }
             currentCity = nextCity;
         }
 
@@ -64,6 +78,11 @@ public class Report {
         double speed = calculateSpeed(drakkar.getRowersPairs(), drakkar.getMaxSpeed(), vikings);
         double distance = calculateDistance(c1.getLatitude(), c1.getLongitude(), c2.getLatitude(), c2.getLongitude());
         return distance/speed ;
+    }
+    
+    private static boolean isSuccessfulAttack(City city, Set<Viking> vikings){
+        double probability =1-Math.pow(1-0.1/city.getScale(), vikings.size());
+        return (probability>0.5);
     }
 
 }
