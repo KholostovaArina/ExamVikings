@@ -33,6 +33,11 @@ public class FirstFrame extends JFrame {
         startButton.setFont(Design.getBaseFont());
         startButton.setForeground(Color.WHITE);
         startButton.setBounds(300, 350, 200, 50);
+        startButton.addActionListener(e -> {
+            dispose();
+            LoreFrame lf = new LoreFrame();
+        });
+
         panel.add(startButton);
 
         setContentPane(panel);

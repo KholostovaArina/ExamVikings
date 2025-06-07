@@ -11,13 +11,14 @@ public class Design {
     private static Image rightImage;
     private static Image leftImage;
     private static Image firstImage;
-            
+    private static Image astraImage;        
     
     static {
         try {
             rightImage = ImageIO.read(Design.class.getResourceAsStream("/право.png"));
             leftImage = ImageIO.read(Design.class.getResourceAsStream("/лево.png"));
             firstImage = ImageIO.read(Design.class.getResourceAsStream("/море.jpg"));
+            astraImage = ImageIO.read(Design.class.getResourceAsStream("/Astra.png"));
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,6 +61,10 @@ public class Design {
 
     public static Image getFirstImage() {
         return firstImage;
+    }
+
+    public static Image getAstraImage() {
+        return astraImage;
     }
     
     public static Image getRightImage() {
