@@ -7,10 +7,6 @@ import com.mycompany.examvikings.GUI.FirstFrame;
 public class ExamVikings {
 
     public static void main(String[] args) {
-//        Cities.loadCitiesFromDB();
-//        MainFrame.createMainFrame();
-
-        FirstFrame ff = new FirstFrame();
-        
+        FirstFrame ff = new FirstFrame();    
     }
 }
