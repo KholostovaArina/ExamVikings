@@ -1,5 +1,9 @@
 package com.mycompany.examvikings.GUI;
 
+import EntityManager.Cities;
+import Entity.City;
+import Entity.Drakkar;
+import Entity.Viking;
 import com.mycompany.examvikings.*;
 import java.awt.*;
 import java.util.List;

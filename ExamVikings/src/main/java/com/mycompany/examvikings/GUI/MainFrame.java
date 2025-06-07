@@ -1,7 +1,7 @@
 package com.mycompany.examvikings.GUI;
 
 import Reading.SQLReader;
-import com.mycompany.examvikings.Viking;
+import Entity.Viking;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

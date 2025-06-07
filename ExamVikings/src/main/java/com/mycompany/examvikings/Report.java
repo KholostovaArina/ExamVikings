@@ -1,5 +1,10 @@
 package com.mycompany.examvikings;
 
+import EntityManager.LootManager;
+import Entity.City;
+import Entity.Drakkar;
+import Entity.Viking;
+import Entity.Loot;
 import java.util.*;
 import java.util.stream.Collectors;
 

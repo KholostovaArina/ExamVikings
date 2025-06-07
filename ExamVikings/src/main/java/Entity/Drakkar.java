@@ -1,4 +1,4 @@
-package com.mycompany.examvikings;
+package Entity;
 
 import java.awt.Image;
 import java.io.IOException;

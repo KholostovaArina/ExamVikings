@@ -1,7 +1,7 @@
 package Reading;
 
-import com.mycompany.examvikings.Drakkar;
-import com.mycompany.examvikings.DrakkarConfig;
+import Entity.Drakkar;
+import EntityManager.DrakkarConfig;
 import java.io.IOException;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;

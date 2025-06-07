@@ -1,5 +1,6 @@
-package com.mycompany.examvikings;
+package EntityManager;
 
+import Entity.Drakkar;
 import java.util.List;
 
 public class DrakkarConfig {

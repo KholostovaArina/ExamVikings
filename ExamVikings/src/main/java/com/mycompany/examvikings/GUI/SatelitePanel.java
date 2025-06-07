@@ -1,6 +1,6 @@
 package com.mycompany.examvikings.GUI;
 
-import com.mycompany.examvikings.Viking;
+import Entity.Viking;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;

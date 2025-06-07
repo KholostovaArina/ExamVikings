@@ -1,5 +1,10 @@
-package com.mycompany.examvikings;
+package com.mycompany.examvikings.GUI;
 
+import Entity.City;
+import Entity.Drakkar;
+import Entity.Viking;
+import Entity.Loot;
+import com.mycompany.examvikings.Report;
 import static com.mycompany.examvikings.Report.food;
 import javax.swing.*;
 import java.awt.*;

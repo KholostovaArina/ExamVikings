@@ -1,8 +1,8 @@
 package Reading;
 
 import Reading.SQLConnector;
-import com.mycompany.examvikings.City;
-import com.mycompany.examvikings.Viking;
+import Entity.City;
+import Entity.Viking;
 import java.sql.*;
 import java.util.*;
 

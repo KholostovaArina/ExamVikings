@@ -1,5 +1,6 @@
-package com.mycompany.examvikings;
+package EntityManager;
 
+import Entity.City;
 import Reading.SQLConnector;
 import java.util.*;
 import java.sql.*;

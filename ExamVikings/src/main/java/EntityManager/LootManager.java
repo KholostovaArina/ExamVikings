@@ -1,5 +1,6 @@
-package com.mycompany.examvikings;
+package EntityManager;
 
+import Entity.Loot;
 import java.util.*;
 
 public class LootManager {

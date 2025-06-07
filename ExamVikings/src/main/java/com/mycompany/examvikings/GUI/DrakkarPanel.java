@@ -1,6 +1,8 @@
 package com.mycompany.examvikings.GUI;
 
-import com.mycompany.examvikings.*;
+import Design.Design;
+import Entity.Drakkar;
+import Reading.DrakkarLoader;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;

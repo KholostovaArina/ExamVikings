@@ -1,7 +1,7 @@
 package com.mycompany.examvikings.GUI;
 
-import com.mycompany.examvikings.City;
-import com.mycompany.examvikings.Cities;
+import Entity.City;
+import EntityManager.Cities;
 
 import javax.swing.*;
 import java.awt.*;

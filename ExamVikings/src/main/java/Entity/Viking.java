@@ -1,4 +1,4 @@
-package com.mycompany.examvikings;
+package Entity;
 
 public final class Viking {
     private int id;
