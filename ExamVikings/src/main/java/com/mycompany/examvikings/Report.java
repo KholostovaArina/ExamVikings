@@ -8,6 +8,7 @@ public class Report {
     public static double food = 0; // меры еды
     public static List<Loot> loots;
     public static int slaves = 0;
+    public static int id = 0;
 
     public static class ReportData {
         public final List<CityVisit> visits = new ArrayList<>();
@@ -15,7 +16,7 @@ public class Report {
         public double totalTime;
         public boolean foodRanOut;
         public boolean tooLong;
-        public boolean noSuccess;
+        public boolean noSuccess = true;
         public boolean possible;
         public int totalSlaves;
         public int totalLoots;
@@ -43,7 +44,8 @@ public class Report {
 
     public static ReportData generateReportData(Set<Viking> vikings, List<City> cityList, Drakkar drakkar) {
         ReportData data = new ReportData();
-        data.reportId = new Random().nextInt(10000);
+        id++;
+        data.reportId = id;
         if (vikings.isEmpty() || cityList.size() < 2 || drakkar == null) {
             data.possible = false;
             return data;
@@ -75,13 +77,16 @@ public class Report {
             }
 
             boolean success = isSuccessfulAttack(nextCity, vikings);
+            if (isSuccessfulAttack(nextCity, vikings)){
+                data.noSuccess = false;        
+            }
             data.noSuccess &= !success;
 
             List<Loot> collectedLoots = new ArrayList<>();
             if (success) {
                 for (int j = 0; j < 10 * nextCity.getScale(); j++) {
                     Loot loot = lootik.getRandomLootByCityType(nextCity.getCityType());
-                    if (loot != null && canAddLoot(drakkar, loot)) {
+                    if (loot != null && canAddLoot(drakkar, vikings)) {
                         loots.add(loot);
                         collectedLoots.add(loot);
                         data.totalLoots++;
@@ -116,13 +121,16 @@ public class Report {
         }
 
         data.possible = !(data.tooLong || data.foodRanOut || data.noSuccess);
+       
         return data;
     }
 
-    private static boolean canAddLoot(Drakkar drakkar, Loot loot) {
-        double foodWeight = food * 10;
-        double lootWeight = loots.size() * 10 + 10;
-        return (foodWeight + lootWeight) <= drakkar.getCargoCapacity() * 1000;
+    private static boolean canAddLoot(Drakkar drakkar, Set<Viking> vikings) {
+        double foodWeight = food * 20;//в день по 2 кг викинги съедают
+        double lootWeight = loots.size() * 20 ;
+        double vikingsWeight = vikings.size() * 120; //средний вес викинга
+        double slavesWeight = slaves * 80;// меньше пива пьют
+        return (foodWeight + lootWeight + vikingsWeight + slavesWeight) <= drakkar.getCargoCapacity() * 1000;
     }
 
     private static boolean eat(double time, Set<Viking> vikings) {

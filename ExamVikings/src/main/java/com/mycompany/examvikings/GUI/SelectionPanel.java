@@ -12,9 +12,10 @@ public class SelectionPanel {
     public static JLabel routeLabel;
     public static List<City> orderedCities = new ArrayList<>();
     public static Drakkar selectedDrakkar;
-    public static Set<Viking> selectedVikings;
+    public static Set<Viking> selectedVikings = new HashSet<>();
 
     public static Component createRightPanel() {
+        JScrollPane scrollRightPanel = new JScrollPane();
         JPanel rightPanel = new JPanel(new BorderLayout());
 
         JPanel infoPanel = new JPanel();
@@ -35,19 +36,62 @@ public class SelectionPanel {
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton buttonReady = new JButton("Готово");
         buttonReady.addActionListener(e -> {
-           ReportFrame rf =  new ReportFrame();
-           rf.showReport(
-                selectedVikings,
-                orderedCities,
-                selectedDrakkar
+            if (selectedDrakkar == null){
+                JOptionPane.showMessageDialog(
+                        null,
+                        "⚠️ Не выбран дракар!",
+                        "Ошибка",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+            
+            if (selectedVikings.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "⚠️ Не выбраны викинги!",
+                        "Ошибка",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+            if (orderedCities.size() < 2) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "⚠️ Не выбраны города!",
+                        "Ошибка",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+            
+            if (selectedVikings.size() > selectedDrakkar.getCrewCapacity()){
+                JOptionPane.showMessageDialog(
+                        null,
+                        "⚠️ Невозможно вместить всех викингов в драккар\n максимум "+selectedDrakkar.getCrewCapacity()+" викингов",
+                        "Ошибка",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+            
+            // Все параметры выбраны — создаём репорт
+            ReportFrame rf = new ReportFrame();
+            rf.showReport(
+                    selectedVikings,
+                    orderedCities,
+                    selectedDrakkar
             );
         });
+
         bottomPanel.add(buttonReady);
 
         rightPanel.add(infoPanel, BorderLayout.CENTER);
         rightPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        return rightPanel;
+        scrollRightPanel.setViewportView(rightPanel);
+
+        return scrollRightPanel;
     }
 
     public static void setSelectedSatellites(Set<Viking> vikings) {
