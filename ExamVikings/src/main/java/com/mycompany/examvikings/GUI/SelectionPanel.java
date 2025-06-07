@@ -34,13 +34,14 @@ public class SelectionPanel {
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton buttonReady = new JButton("Готово");
-        buttonReady.addActionListener(e -> 
-            Report.doReport(
+        buttonReady.addActionListener(e -> {
+           ReportFrame rf =  new ReportFrame();
+           rf.showReport(
                 selectedVikings,
                 orderedCities,
                 selectedDrakkar
-            )
-        );
+            );
+        });
         bottomPanel.add(buttonReady);
 
         rightPanel.add(infoPanel, BorderLayout.CENTER);

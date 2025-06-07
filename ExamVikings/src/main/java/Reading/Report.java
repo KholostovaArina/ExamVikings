@@ -1,5 +1,4 @@
-package com.mycompany.examvikings;
-
+package Reading;
 import java.util.*;
 import java.util.stream.Collectors;
 
