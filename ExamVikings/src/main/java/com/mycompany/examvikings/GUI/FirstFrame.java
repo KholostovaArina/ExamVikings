@@ -7,7 +7,7 @@ import java.awt.*;
 public class FirstFrame extends JFrame {
     public FirstFrame() {
         setTitle("Пророчество Викингов");
-        setSize(800, 500);
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -34,7 +34,7 @@ public class FirstFrame extends JFrame {
         JPanel subPanel = new JPanel(new BorderLayout());
         subPanel.setOpaque(false); // фон не закрывает
         JLabel subtitleLabel = new JLabel("created by Arina", SwingConstants.RIGHT);
-        subtitleLabel.setFont(Design.getBaseFont());
+        subtitleLabel.setFont(Design.getBaseFont().deriveFont(28f));
         subPanel.add(subtitleLabel, BorderLayout.EAST);
         subPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
         panel.add(subPanel);

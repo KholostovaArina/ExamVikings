@@ -69,8 +69,8 @@ public class LoreFrame extends JFrame {
         startButton.setMaximumSize(new Dimension(200, 50));
         startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         startButton.addActionListener(e ->{
-                    Cities.loadCitiesFromDB();
-                    MainFrame.createMainFrame();
+                    dispose();
+                    new HomeScreen();
         });
         panel.add(startButton);
 

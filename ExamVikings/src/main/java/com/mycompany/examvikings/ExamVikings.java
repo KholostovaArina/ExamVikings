@@ -7,6 +7,7 @@ import com.mycompany.examvikings.GUI.FirstFrame;
 public class ExamVikings {
 
     public static void main(String[] args) {
+
         FirstFrame ff = new FirstFrame();    
     }
 }

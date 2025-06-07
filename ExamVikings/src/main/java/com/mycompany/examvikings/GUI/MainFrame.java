@@ -14,7 +14,14 @@ public class MainFrame {
 
     public static void createMainFrame() {
         JFrame frame = new JFrame("Система планировщика набегов викингов");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                new HomeScreen();
+            }
+        });
+
         frame.setSize(1000, 600);
         frame.setLocationRelativeTo(null);
 

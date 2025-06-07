@@ -41,7 +41,7 @@ public class Design {
     static {
         try (InputStream fontStream = Design.class.getResourceAsStream("/baseFont.otf")) {
             baseFont = Font.createFont(Font.TRUETYPE_FONT, fontStream);
-            baseFont = baseFont.deriveFont(Font.BOLD, 24);
+            baseFont = baseFont.deriveFont(Font.BOLD, 22);
         } catch (IOException | FontFormatException e) {
             baseFont = new Font("Serif", Font.PLAIN, 18);
         }
