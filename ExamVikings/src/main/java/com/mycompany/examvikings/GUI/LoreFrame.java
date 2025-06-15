@@ -1,7 +1,7 @@
 package com.mycompany.examvikings.GUI;
 
 import Design.Design;
-import EntityManager.Cities;
+import EntityManager.Vikings;
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,6 +11,7 @@ public class LoreFrame extends JFrame {
         setSize(800, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        
 
         // Панель с картинкой
         JPanel panel = Design.createPanelWithPhoto(Design.getAstraImage());

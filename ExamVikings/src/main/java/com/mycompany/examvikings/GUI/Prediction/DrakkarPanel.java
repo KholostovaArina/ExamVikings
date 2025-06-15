@@ -1,5 +1,6 @@
-package com.mycompany.examvikings.GUI;
+package com.mycompany.examvikings.GUI.Prediction;
 
+import com.mycompany.examvikings.GUI.Prediction.SelectionPanel;
 import Design.Design;
 import Entity.Drakkar;
 import Reading.DrakkarLoader;

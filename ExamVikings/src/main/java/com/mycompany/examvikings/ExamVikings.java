@@ -1,13 +1,13 @@
 package com.mycompany.examvikings;
 
-//import EntityManager.Cities;
+import Entity.Inventory;
 import com.mycompany.examvikings.GUI.FirstFrame;
-//import com.mycompany.examvikings.GUI.MainFrame;
 
 public class ExamVikings {
 
+    public static Inventory inventory;
+    
     public static void main(String[] args) {
-
         FirstFrame ff = new FirstFrame();    
     }
 }

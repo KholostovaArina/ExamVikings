@@ -1,5 +1,6 @@
-package com.mycompany.examvikings.GUI;
+package com.mycompany.examvikings.GUI.Prediction;
 
+import com.mycompany.examvikings.GUI.Prediction.SelectionPanel;
 import Entity.Viking;
 import java.awt.*;
 import java.awt.image.BufferedImage;

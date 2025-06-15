@@ -1,10 +1,11 @@
-package com.mycompany.examvikings.GUI;
+package com.mycompany.examvikings.GUI.Prediction;
 
 import EntityManager.Cities;
 import Entity.City;
 import Entity.Drakkar;
 import Entity.Viking;
 import com.mycompany.examvikings.*;
+import com.mycompany.examvikings.GUI.ReportFrame;
 import java.awt.*;
 import java.util.List;
 import java.util.*;
@@ -78,14 +79,9 @@ public class SelectionPanel {
                 );
                 return;
             }
-            
-            // Все параметры выбраны — создаём репорт
+
             ReportFrame rf = new ReportFrame();
-            rf.showReport(
-                    selectedVikings,
-                    orderedCities,
-                    selectedDrakkar
-            );
+            rf.showReport(selectedVikings, orderedCities, selectedDrakkar);
         });
 
         bottomPanel.add(buttonReady);

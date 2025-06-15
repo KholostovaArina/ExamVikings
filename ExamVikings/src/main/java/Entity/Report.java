@@ -1,10 +1,7 @@
-package com.mycompany.examvikings;
+package Entity;
 
 import EntityManager.LootManager;
-import Entity.City;
-import Entity.Drakkar;
-import Entity.Viking;
-import Entity.Loot;
+import EntityManager.HistoryReportsManager;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -70,6 +67,7 @@ public class Report {
             double time = calculateTime(currentCity, nextCity, vikings, drakkar);
 
             data.totalTime += time;
+            data.totalTime += 7*24;//7 дней находятся в городе
 
             if (data.totalTime / 24 > 60) {
                 data.tooLong = true;
@@ -116,7 +114,14 @@ public class Report {
         if (!data.tooLong && !data.foodRanOut) {
             double timeHome = calculateTime(currentCity, data.startCity, vikings, drakkar);
             data.totalTime += timeHome;
-            eat(timeHome, vikings);
+            
+            if (data.totalTime / 24 > 60) {
+                data.tooLong = true;
+            }
+
+            if (!eat(timeHome, vikings)) {
+                data.foodRanOut = true;
+            }
         }
 
         Map<String, Long> lootMap = loots.stream()
@@ -127,6 +132,8 @@ public class Report {
 
         data.possible = !(data.tooLong || data.foodRanOut || data.noSuccess);
        
+       // Добавляем отчет в историю
+       HistoryReportsManager.getInstance().addReport(data);
         return data;
     }
 
@@ -139,7 +146,7 @@ public class Report {
     }
 
     private static boolean eat(double time, Set<Viking> vikings) {
-        food -= (vikings.size() + slaves) * time / 240;
+        food -= (vikings.size() + slaves) * time / 240;//1 мера - 10 дней = 24 часов
         while (food < 0) {
             boolean foundFood = false;
             Iterator<Loot> it = loots.iterator();

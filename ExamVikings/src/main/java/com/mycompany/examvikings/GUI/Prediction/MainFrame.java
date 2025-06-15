@@ -1,7 +1,9 @@
-package com.mycompany.examvikings.GUI;
+package com.mycompany.examvikings.GUI.Prediction;
 
 import Reading.SQLReader;
 import Entity.Viking;
+import EntityManager.Vikings;
+import com.mycompany.examvikings.GUI.HomeScreen;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,6 +16,7 @@ public class MainFrame {
 
     public static void createMainFrame() {
         JFrame frame = new JFrame("Система планировщика набегов викингов");
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -44,7 +47,7 @@ public class MainFrame {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
         cardPanel.add(DrakkarPanel.create(), "DRAKKAR");
-        java.util.List<Viking> vikings = SQLReader.readVikings();
+        java.util.List<Viking> vikings = Vikings.getAllVikings();
         cardPanel.add(SatelitePanel.create(vikings), "SATELLITE");
         cardPanel.add(RoutePanel.create(), "ROUTE");
         cardLayout.show(cardPanel, "DRAKKAR");
