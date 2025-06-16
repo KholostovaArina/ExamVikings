@@ -18,7 +18,7 @@ public class ShopVikingsPanel {
     private List<Viking> vikingChoices;
     private int currentIndex = 0;
     private JLabel silverLabel, mainImageLabel, nameLabel;
-    private JTextPane infoPane;
+    private JPanel infoPanel; // Теперь будет инициализирована
 
     public JPanel create(JLabel sharedSilverLabel) {
         this.silverLabel = sharedSilverLabel;
@@ -67,17 +67,14 @@ public class ShopVikingsPanel {
         nameLabel.setForeground(new Color(45, 56, 61));
         nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        infoPane = new JTextPane();
-        infoPane.setEditable(false);
-        infoPane.setContentType("text/html");
-        infoPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
-        infoPane.setBorder(null);
-        infoPane.setFont(new Font("Arial", Font.PLAIN, 14));
-        infoPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-        infoPane.setPreferredSize(new Dimension(210, 100));
+        // Инициализация infoPanel
+        infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setOpaque(false);
 
         Design.CustomButton btnBuy = new Design.CustomButton("Купить викинга");
         btnBuy.setForeground(Color.WHITE);
+        btnBuy.setFont(Design.getBaseFont().deriveFont(24f));
         btnBuy.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // --- Покупка ---
@@ -106,9 +103,10 @@ public class ShopVikingsPanel {
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         rightPanel.setOpaque(false);
+        rightPanel.add(Box.createVerticalStrut(50));
         rightPanel.add(nameLabel);
-        rightPanel.add(Box.createVerticalStrut(10));
-        rightPanel.add(infoPane);
+        rightPanel.add(Box.createVerticalStrut(50));
+        rightPanel.add(infoPanel); // Используем инициализированный infoPanel
         rightPanel.add(Box.createVerticalStrut(24));
         rightPanel.add(btnBuy);
         rightPanel.add(Box.createVerticalGlue());
@@ -138,7 +136,7 @@ public class ShopVikingsPanel {
     }
 
     private void move(int d) {
-        if (vikingChoices.size() == 0) {
+        if (vikingChoices.isEmpty()) {
             return;
         }
         currentIndex = (currentIndex + d + vikingChoices.size()) % vikingChoices.size();
@@ -149,31 +147,38 @@ public class ShopVikingsPanel {
         if (vikingChoices == null || vikingChoices.isEmpty()) {
             mainImageLabel.setIcon(null);
             nameLabel.setText("Викингов больше нет!");
-            infoPane.setText("");
+            infoPanel.removeAll();
+            infoPanel.revalidate();
+            infoPanel.repaint();
             return;
         }
 
         Viking v = vikingChoices.get(currentIndex);
 
-        // Обновляем имя и информацию
-        nameLabel.setText("<html><b>" + v.getName() + "</b></html>");
-        infoPane.setText(String.format(
-                "<html><div style='font-size:12pt; color:#253270; padding:7px'>"
-                + "Пол: %s<br>"
-                + "Клан: %s<br>"
-                + "Возраст: %d лет<br>"
-                + "Коэфф. активности: %.1f<br>"
-                + "ID: %d"
-                + "</div></html>",
-                v.getGender(), v.getClan(), v.getAge(), v.getActivityCoefficient(), v.getId())
-        );
+        // Обновляем имя
+        nameLabel.setText(v.getName());
+
+        // Обновляем информацию
+        infoPanel.removeAll(); // Очищаем старые данные
+        JLabel genderLabel = new JLabel("Пол: " + v.getGender());
+        JLabel clanLabel = new JLabel("Клан: " + v.getClan());
+        JLabel ageLabel = new JLabel("Возраст: " + v.getAge() + " лет");
+        JLabel activityLabel = new JLabel(String.format("Коэфф. активности: %.1f", v.getActivityCoefficient()));
+        JLabel idLabel = new JLabel("ID: " + v.getId());
+
+        for (JLabel label : new JLabel[]{genderLabel, clanLabel, ageLabel, activityLabel, idLabel}) {
+            label.setFont(Design.getBaseFont().deriveFont(22f));
+            label.setForeground(new Color(45, 56, 61));
+            label.setBorder(BorderFactory.createEmptyBorder(7, 7, 7, 7)); // padding
+            infoPanel.add(label);
+        }
+        infoPanel.revalidate();
+        infoPanel.repaint();
 
         // Загружаем фото
         mainImageLabel.setIcon(null); // Очистка предыдущего изображения
         mainImageLabel.setText(""); // Очистка текста
         String photoPath = v.getPhotoPath();
-
-        System.out.println("[DEBUG] Пытаюсь загрузить фото по пути: " + photoPath);
 
         if (photoPath == null || photoPath.isEmpty()) {
             System.err.println("[ERROR] Путь к фото пустой");
