@@ -6,14 +6,24 @@ import EntityManager.Cities;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Главный экран приложения — стартовая точка для всех действий.
+ * Предоставляет пользователю выбор: история набегов и предсказаний, 
+ * планирование нового похода, магазин викингов.
+ */
 public class HomeScreen extends JFrame {
+
+    /**
+     * Создаёт и настраивает главное окно приложения.
+     * Отображает фоновое изображение и кнопки для перехода к различным функциям:
+     * история набегов, история отчётов, планирование похода, магазин.
+     */
     public HomeScreen() {
         setTitle("Пророчество Викингов");
         setSize(800, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Панель с фоном-картинкой
         JPanel panel = Design.createPanelWithPhoto(Design.getFirstImage());
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setOpaque(true);
@@ -37,7 +47,8 @@ public class HomeScreen extends JFrame {
         historyReportButton.setForeground(Color.WHITE);
         historyReportButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         historyReportButton.setMaximumSize(new Dimension(400, 100));
-        
+        panel.add(historyReportButton);
+
         Design.CustomButton historyButton = new Design.CustomButton("История набегов");
         historyButton.setFont(Design.getBaseFont().deriveFont(24f));
         historyButton.addActionListener(e -> {
@@ -47,20 +58,26 @@ public class HomeScreen extends JFrame {
         historyButton.setForeground(Color.WHITE);
         historyButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         historyButton.setMaximumSize(new Dimension(400, 100));
+        panel.add(historyButton);
+
+        panel.add(Box.createVerticalStrut(70));
 
         Design.CustomButton predictButton = new Design.CustomButton("Предсказать набег");
         predictButton.setFont(Design.getBaseFont().deriveFont(24f));
         predictButton.setForeground(Color.WHITE);
         predictButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         predictButton.setMaximumSize(new Dimension(400, 100));
-        predictButton.addActionListener(e ->{
+        predictButton.addActionListener(e -> {
             Cities.loadCitiesFromDB();
             dispose();
             MainFrame.createMainFrame();
         });
-        
+        panel.add(predictButton);
+
+        panel.add(Box.createVerticalStrut(70));
+
         Design.CustomButton shopButton = new Design.CustomButton("Пойти на рынок");
-        shopButton.addActionListener(e ->{
+        shopButton.addActionListener(e -> {
             dispose();
             ShopFrame.createShopFrame();
         });
@@ -68,16 +85,9 @@ public class HomeScreen extends JFrame {
         shopButton.setForeground(Color.WHITE);
         shopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         shopButton.setMaximumSize(new Dimension(400, 100));
-
-        panel.add(historyButton);
-        panel.add(Box.createVerticalStrut(70));
-        panel.add(historyReportButton);
-        panel.add(Box.createVerticalStrut(70));
-        panel.add(predictButton);
-        panel.add(Box.createVerticalStrut(70));
         panel.add(shopButton);
 
-        // Пружина - чтобы всё было по центру, вне зависимости от размера
+        panel.add(Box.createVerticalStrut(70));
         panel.add(Box.createVerticalGlue());
 
         setContentPane(panel);

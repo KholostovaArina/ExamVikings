@@ -12,14 +12,50 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Панель, отображающая список доступных для покупки викингов.
+ * Предоставляет возможность просмотра характеристик и покупки викинга за серебро.
+ */
 public class ShopVikingsPanel {
 
     private static final int MAIN_IMAGE_SIZE = 400, ARROW_SIZE = 70;
-    private List<Viking> vikingChoices;
-    private int currentIndex = 0;
-    private JLabel silverLabel, mainImageLabel, nameLabel;
-    private JPanel infoPanel; // Теперь будет инициализирована
 
+    /**
+     * Список текущих доступных вариантов викингов.
+     */
+    private List<Viking> vikingChoices;
+
+    /**
+     * Индекс выбранного викинга.
+     */
+    private int currentIndex = 0;
+
+    /**
+     * Метка для отображения количества серебра.
+     */
+    private JLabel silverLabel;
+
+    /**
+     * Метка для отображения изображения викинга.
+     */
+    private JLabel mainImageLabel;
+
+    /**
+     * Метка для отображения имени викинга.
+     */
+    private JLabel nameLabel;
+
+    /**
+     * Панель с информацией о характеристиках викинга.
+     */
+    private JPanel infoPanel;
+
+    /**
+     * Создаёт и настраивает панель магазина викингов.
+     *
+     * @param sharedSilverLabel метка с текущим количеством серебра (общая для всех экранов)
+     * @return полностью настроенная {@link JPanel} с интерфейсом магазина
+     */
     public JPanel create(JLabel sharedSilverLabel) {
         this.silverLabel = sharedSilverLabel;
 
@@ -29,13 +65,11 @@ public class ShopVikingsPanel {
         }
         currentIndex = 0;
 
-        // == Верхний лейбл серебра ==
-        silverLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        silverLabel.setFont(Design.getBaseFont().deriveFont(20f));
         silverLabel.setForeground(new Color(30, 53, 102));
         silverLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 12, 10));
         silverLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
 
-        // == ЛЕВО: фото и стрелки ==
         mainImageLabel = new JLabel();
         mainImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         mainImageLabel.setVerticalAlignment(SwingConstants.CENTER);
@@ -44,6 +78,7 @@ public class ShopVikingsPanel {
 
         JButton prevBtn = navBtn(Design.getLeftImage(), () -> move(-1));
         JButton nextBtn = navBtn(Design.getRightImage(), () -> move(1));
+
         JPanel arrowsPanel = new JPanel();
         arrowsPanel.setOpaque(false);
         arrowsPanel.setLayout(new BoxLayout(arrowsPanel, BoxLayout.X_AXIS));
@@ -61,13 +96,11 @@ public class ShopVikingsPanel {
         leftPanel.add(Box.createVerticalStrut(18));
         leftPanel.add(arrowsPanel);
 
-        // == ПРАВО: инфа, кнопка ==
         nameLabel = new JLabel();
         nameLabel.setFont(Design.getBigFont());
         nameLabel.setForeground(new Color(45, 56, 61));
         nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Инициализация infoPanel
         infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setOpaque(false);
@@ -77,7 +110,6 @@ public class ShopVikingsPanel {
         btnBuy.setFont(Design.getBaseFont().deriveFont(24f));
         btnBuy.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // --- Покупка ---
         btnBuy.addActionListener((ActionEvent e) -> {
             Viking selected = vikingChoices.get(currentIndex);
             if (Inventory.getSilver() >= 200) {
@@ -106,12 +138,11 @@ public class ShopVikingsPanel {
         rightPanel.add(Box.createVerticalStrut(50));
         rightPanel.add(nameLabel);
         rightPanel.add(Box.createVerticalStrut(50));
-        rightPanel.add(infoPanel); // Используем инициализированный infoPanel
+        rightPanel.add(infoPanel);
         rightPanel.add(Box.createVerticalStrut(24));
         rightPanel.add(btnBuy);
         rightPanel.add(Box.createVerticalGlue());
 
-        // == Объединяем слева-справа ==
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
         centerPanel.setOpaque(false);
@@ -135,6 +166,11 @@ public class ShopVikingsPanel {
         return mainPanel;
     }
 
+    /**
+     * Обновляет отображение викинга при навигации.
+     *
+     * @param d шаг изменения индекса (-1 или +1)
+     */
     private void move(int d) {
         if (vikingChoices.isEmpty()) {
             return;
@@ -143,6 +179,9 @@ public class ShopVikingsPanel {
         updateDisplay();
     }
 
+    /**
+     * Обновляет информацию о текущем выбранном викинге: имя, фото, характеристики.
+     */
     private void updateDisplay() {
         if (vikingChoices == null || vikingChoices.isEmpty()) {
             mainImageLabel.setIcon(null);
@@ -155,11 +194,10 @@ public class ShopVikingsPanel {
 
         Viking v = vikingChoices.get(currentIndex);
 
-        // Обновляем имя
         nameLabel.setText(v.getName());
 
-        // Обновляем информацию
-        infoPanel.removeAll(); // Очищаем старые данные
+        infoPanel.removeAll();
+
         JLabel genderLabel = new JLabel("Пол: " + v.getGender());
         JLabel clanLabel = new JLabel("Клан: " + v.getClan());
         JLabel ageLabel = new JLabel("Возраст: " + v.getAge() + " лет");
@@ -169,15 +207,15 @@ public class ShopVikingsPanel {
         for (JLabel label : new JLabel[]{genderLabel, clanLabel, ageLabel, activityLabel, idLabel}) {
             label.setFont(Design.getBaseFont().deriveFont(22f));
             label.setForeground(new Color(45, 56, 61));
-            label.setBorder(BorderFactory.createEmptyBorder(7, 7, 7, 7)); // padding
+            label.setBorder(BorderFactory.createEmptyBorder(7, 7, 7, 7));
             infoPanel.add(label);
         }
+
         infoPanel.revalidate();
         infoPanel.repaint();
 
-        // Загружаем фото
-        mainImageLabel.setIcon(null); // Очистка предыдущего изображения
-        mainImageLabel.setText(""); // Очистка текста
+        mainImageLabel.setIcon(null);
+        mainImageLabel.setText("");
         String photoPath = v.getPhotoPath();
 
         if (photoPath == null || photoPath.isEmpty()) {
@@ -186,15 +224,12 @@ public class ShopVikingsPanel {
             return;
         }
 
-        // Нормализуем путь
         if (!photoPath.startsWith("/")) {
             photoPath = "/" + photoPath;
         }
 
         URL imgUrl = ShopVikingsPanel.class.getResource(photoPath);
-
         if (imgUrl == null) {
-            // Пробуем через контекстный загрузчик
             imgUrl = Thread.currentThread().getContextClassLoader().getResource(photoPath.substring(1));
         }
 
@@ -206,7 +241,6 @@ public class ShopVikingsPanel {
             } catch (Exception ex) {
                 System.err.println("[ERROR] Не удалось загрузить изображение: " + ex.getMessage());
                 mainImageLabel.setText("Ошибка загрузки изображения");
-                ex.printStackTrace();
             }
         } else {
             System.err.println("[ERROR] Фото не найдено по пути: " + photoPath);
@@ -214,6 +248,13 @@ public class ShopVikingsPanel {
         }
     }
 
+    /**
+     * Создаёт кнопку навигации (вправо/влево).
+     *
+     * @param image изображение для кнопки
+     * @param action действие, выполняемое при клике
+     * @return настроенная кнопка навигации
+     */
     private JButton navBtn(Image image, Runnable action) {
         JButton btn = new JButton();
         btn.setContentAreaFilled(false);
@@ -226,6 +267,9 @@ public class ShopVikingsPanel {
         return btn;
     }
 
+    /**
+     * Обновляет отображаемое количество серебра.
+     */
     public void refreshSilver() {
         if (silverLabel != null) {
             silverLabel.setText("Серебро: " + Inventory.getSilver());

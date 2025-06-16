@@ -9,12 +9,36 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+/**
+ * Класс, представляющий окно истории набегов.
+ * Отображает список всех прошедших набегов и позволяет просмотреть отчёт о каждом из них.
+ */
 public class HistoryAttacks extends JFrame {
+
+    /**
+     * Список строкового представления набегов для отображения пользователю.
+     */
     private final JList<String> attackList;
+
+    /**
+     * Модель списка для хранения записей о набегах.
+     */
     private final DefaultListModel<String> listModel;
+
+    /**
+     * Сообщение, отображаемое, если история набегов пуста.
+     */
     private final JLabel emptyLabel;
+
+    /**
+     * Панель с {@link CardLayout}, которая переключается между списком и сообщением "Набегов пока нет".
+     */
     private final JPanel contentPanel;
 
+    /**
+     * Создаёт новое окно истории набегов.
+     * Настраивает интерфейс, подключает обработчики событий и отображает историю.
+     */
     public HistoryAttacks() {
         setTitle("История набегов");
         setSize(400, 500);
@@ -38,7 +62,7 @@ public class HistoryAttacks extends JFrame {
 
         add(contentPanel, BorderLayout.CENTER);
 
-        // Двойной клик — показываем отчет
+        // Обработка двойного клика — показываем отчет по выбранному набегу
         attackList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -53,6 +77,7 @@ public class HistoryAttacks extends JFrame {
             }
         });
 
+        // При закрытии окна возвращаемся на главный экран
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosed(java.awt.event.WindowEvent e) {
@@ -61,6 +86,9 @@ public class HistoryAttacks extends JFrame {
         });
     }
 
+    /**
+     * Обновляет содержимое панели: показывает либо список набегов, либо сообщение об их отсутствии.
+     */
     private void updateContent() {
         CardLayout cl = (CardLayout) contentPanel.getLayout();
         if (listModel.isEmpty()) {
@@ -70,6 +98,9 @@ public class HistoryAttacks extends JFrame {
         }
     }
 
+    /**
+     * Загружает историю набегов из менеджера и обновляет отображение.
+     */
     private void loadAttacks() {
         listModel.clear();
 
@@ -81,6 +112,11 @@ public class HistoryAttacks extends JFrame {
         updateContent();
     }
 
+    /**
+     * Переопределённый метод, который загружает историю перед отображением окна.
+     *
+     * @param visible флаг видимости окна
+     */
     @Override
     public void setVisible(boolean visible) {
         if (visible) {

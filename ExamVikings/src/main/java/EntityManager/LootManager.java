@@ -3,10 +3,27 @@ package EntityManager;
 import Entity.Loot;
 import java.util.*;
 
+/**
+ * Класс, управляющий логикой генерации добычи в зависимости от типа города.
+ * Содержит предопределённые списки типов добычи и правила их распределения по городам.
+ */
 public class LootManager {
-    private  List<Loot> lootList;
-    private Map<String, List<String>> lootTypesByCityType;
+    
+    /**
+     * Список всех возможных предметов добычи в игре.
+     */
+    private final List<Loot> lootList;
 
+    /**
+     * Карта соответствия типов городов к списку допустимых типов добычи.
+     * Например: "Монастырь" → ["Драгоценности", "Продукты питания"]
+     */
+    private final Map<String, List<String>> lootTypesByCityType;
+
+    /**
+     * Конструктор, инициализирующий список добычи и правила её распределения.
+     * Заполняет базовые данные о предметах и связывает их с типами городов.
+     */
     public LootManager() {
         lootList = new ArrayList<>();
         lootList.add(new Loot("Жемчужная брошь", "Драгоценности"));
@@ -30,7 +47,12 @@ public class LootManager {
         lootTypesByCityType.put("Ремесленная деревня", Arrays.asList("Товары народного потребления", "Кожи"));
     }
 
-    // Получить случайный лут по типу города
+    /**
+     * Возвращает случайную добычу, подходящую для указанного типа города.
+     *
+     * @param cityType тип города (например, "Монастырь", "Рыбацкая деревня")
+     * @return случайный объект {@link Loot} или null, если добыча не найдена
+     */
     public Loot getRandomLootByCityType(String cityType) {
         List<String> allowedLootTypes = lootTypesByCityType.get(cityType);
         if (allowedLootTypes == null || allowedLootTypes.isEmpty()) return null;

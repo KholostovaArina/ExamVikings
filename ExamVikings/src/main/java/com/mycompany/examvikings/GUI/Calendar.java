@@ -5,13 +5,40 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.Month;
 
+/**
+ * Класс, представляющий диалоговое окно выбора даты начала похода.
+ * Позволяет пользователю выбрать стартовую дату и проверяет,
+ * чтобы поход укладывался в допустимый временной диапазон.
+ */
 public class Calendar extends JDialog {
-    private static int currentYear = 800; // Текущий год, увеличивается после успешного похода
 
+    /**
+     * Текущий год, который увеличивается после успешного похода.
+     * Используется для определения возможных дат набегов.
+     */
+    private static int currentYear = 800;
+
+    /**
+     * Флаг, указывающий, была ли подтверждена дата пользователем.
+     */
     private boolean confirmed = false;
+
+    /**
+     * Продолжительность похода в днях.
+     */
     private final int days;
+
+    /**
+     * Выбранная пользователем дата начала похода.
+     */
     private LocalDate selectedStartDate;
 
+    /**
+     * Создаёт новое диалоговое окно для выбора даты начала похода.
+     *
+     * @param parent родительское окно
+     * @param days продолжительность похода в днях
+     */
     public Calendar(JFrame parent, int days) {
         super(parent, "Выбор даты начала похода", true);
         this.days = days;
@@ -103,28 +130,65 @@ public class Calendar extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Возвращает флаг подтверждения даты.
+     *
+     * @return true, если дата была подтверждена, иначе false
+     */
     public boolean isConfirmed() {
         return confirmed;
     }
 
+    /**
+     * Возвращает выбранную пользователем дату начала похода.
+     *
+     * @return объект {@link LocalDate} с выбранной датой
+     */
     public LocalDate getSelectedStartDate() {
         return selectedStartDate;
     }
 
+    /**
+     * Возвращает рассчитанную дату окончания похода на основе выбранной даты старта.
+     *
+     * @return объект {@link LocalDate} с датой окончания похода
+     */
     public LocalDate getEndDate() {
         return selectedStartDate != null ? selectedStartDate.plusDays(days) : null;
     }
 
+    /**
+     * Вложенный класс, представляющий диапазон дат похода.
+     * Содержит даты начала и окончания похода.
+     */
     public static class DateRangeResult {
 
+        /**
+         * Дата начала похода.
+         */
         public final LocalDate startDate;
+
+        /**
+         * Дата окончания похода.
+         */
         public final LocalDate endDate;
 
+        /**
+         * Создаёт новый объект с указанием дат начала и окончания.
+         *
+         * @param start дата начала
+         * @param end дата окончания
+         */
         public DateRangeResult(LocalDate start, LocalDate end) {
             this.startDate = start;
             this.endDate = end;
         }
 
+        /**
+         * Возвращает строковое представление диапазона дат.
+         *
+         * @return строка вида "1 мая — 12 сентября 800"
+         */
         @Override
         public String toString() {
             return String.format("%d %s — %d %s %d",
@@ -133,6 +197,12 @@ public class Calendar extends JDialog {
         }
     }
 
+    /**
+     * Открывает диалоговое окно и возвращает выбранный диапазон дат.
+     *
+     * @param days продолжительность похода в днях
+     * @return объект {@link DateRangeResult} с датами начала и окончания похода
+     */
     public static DateRangeResult calculateDateRange(int days) {
         Calendar dialog = new Calendar((JFrame) null, days);
         dialog.setVisible(true);
@@ -148,28 +218,29 @@ public class Calendar extends JDialog {
         return new DateRangeResult(startDate, endDate);
     }
 
+    /**
+     * Возвращает название месяца на русском языке по его номеру.
+     *
+     * @param monthValue номер месяца (1-12)
+     * @return строка с названием месяца
+     */
     public static String getMonthName(int monthValue) {
         return switch (monthValue) {
-            case 5 ->
-                "мая";
-            case 6 ->
-                "июня";
-            case 7 ->
-                "июля";
-            case 8 ->
-                "августа";
-            case 9 ->
-                "сентября";
-            default ->
-                "";
+            case 5 -> "мая";
+            case 6 -> "июня";
+            case 7 -> "июля";
+            case 8 -> "августа";
+            case 9 -> "сентября";
+            default -> "";
         };
     }
 
     /**
-     * Статический метод получения текущего года
+     * Возвращает текущий год, используемый в приложении.
+     *
+     * @return текущий год
      */
     public static int getCurrentYear() {
         return currentYear;
     }
-
 }

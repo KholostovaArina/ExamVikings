@@ -5,10 +5,21 @@ import Reading.SQLConnector;
 import java.util.*;
 import java.sql.*;
 
+/**
+ * Класс, отвечающий за хранение и загрузку списка городов из базы данных.
+ * Предоставляет методы для получения полного списка городов и поиска по имени.
+ */
 public class Cities {
+    
+    /**
+     * Список всех городов, загруженных из базы данных.
+     */
     private static final List<City> cities = new ArrayList<>();
 
-    // Загружаем города один раз при запуске программы
+    /**
+     * Загружает список городов из базы данных и сохраняет их во внутреннем списке.
+     * Метод очищает предыдущий список перед загрузкой новых данных.
+     */
     public static void loadCitiesFromDB() {
         cities.clear();
         String sql = "SELECT id, name, latitude, longitude, city_type, scale FROM cities";
@@ -30,12 +41,21 @@ public class Cities {
         }
     }
 
-    // Получить все города
+    /**
+     * Возвращает копию списка всех загруженных городов.
+     *
+     * @return список объектов {@link City}
+     */
     public static List<City> getCities() {
         return new ArrayList<>(cities); // чтобы нельзя было сломать внешний список
     }
 
-    // Быстрый поиск по имени
+    /**
+     * Ищет город по его названию (без учёта регистра).
+     *
+     * @param name название города для поиска
+     * @return объект {@link Optional}, содержащий найденный город или пустой результат, если город не найден
+     */
     public static Optional<City> findByName(String name) {
         return cities.stream()
             .filter(c -> c.getName().equalsIgnoreCase(name))

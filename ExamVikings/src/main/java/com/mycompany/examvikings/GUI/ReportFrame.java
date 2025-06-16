@@ -8,14 +8,31 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.ArrayList;
 
+/**
+ * Класс, представляющий окно отчёта о походе викингов.
+ * Отображает маршрут, результаты атак, добычу и итоги набега.
+ */
 public class ReportFrame extends JFrame {
 
+    /**
+     * Текущее количество участвующих викингов.
+     */
     private int vikingCount = 0;
-    private List<String> currentVikingNames = new ArrayList<>(); // <-- добавляем список имён
-    private boolean enableGoButton = true; // по умолчанию видна
 
+    /**
+     * Список имён викингов, участвующих в походе.
+     */
+    private final List<String> currentVikingNames = new ArrayList<>();
+
+    /**
+     * Флаг, определяющий, доступна ли кнопка "Поехать в поход".
+     */
+    private boolean enableGoButton = true;
+
+    /**
+     * Создаёт пустое окно отчёта.
+     */
     public ReportFrame() {
         setTitle("Отчёт о походе");
         setSize(900, 700);
@@ -23,7 +40,11 @@ public class ReportFrame extends JFrame {
     }
 
     /**
-     * Основной метод для нового похода (Set<Viking> известен)
+     * Показывает отчёт для нового похода на основе выбранных викингов, городов и корабля.
+     *
+     * @param vikings множество участвующих викингов
+     * @param cityList список посещённых городов
+     * @param drakkar используемый драккар
      */
     public void showReport(Set<Viking> vikings, List<City> cityList, Drakkar drakkar) {
         this.vikingCount = vikings.size();
@@ -37,8 +58,10 @@ public class ReportFrame extends JFrame {
     }
 
     /**
-     * Отображение отчёта (history=true — только для просмотра: нельзя забрать
-     * лут)
+     * Отображает отчёт о набеге из истории.
+     *
+     * @param data данные отчёта
+     * @param enableGoButton флаг доступности кнопки "Поехать в поход"
      */
     public void showReport(Report.ReportData data, boolean enableGoButton) {
         this.currentVikingNames.clear();
@@ -46,16 +69,19 @@ public class ReportFrame extends JFrame {
         showThisReport(data);
     }
 
+    /**
+     * Отображает исторический отчёт (по умолчанию с активированной кнопкой).
+     *
+     * @param data данные отчёта
+     */
     public void showReport(Report.ReportData data) {
-        showReport(data, true); // по умолчанию из истории отчетов — кнопка видна
+        showReport(data, true); // по умолчанию из истории — кнопка видна
     }
 
-
-
-
-
     /**
-     * Универсальный отображатель отчёта
+     * Универсальный метод отображения отчёта.
+     *
+     * @param data данные отчёта
      */
     private void showThisReport(Report.ReportData data) {
         setTitle("Отчёт о походе №" + data.reportId);
@@ -72,7 +98,6 @@ public class ReportFrame extends JFrame {
         content.add(lblTitle);
         content.add(Box.createVerticalStrut(12));
 
-        // ✅ Показываем список викингов, если это не исторический отчёт
         if (!currentVikingNames.isEmpty()) {
             content.add(getBoldLabel("Участники похода:"));
             for (String name : currentVikingNames) {
@@ -81,7 +106,6 @@ public class ReportFrame extends JFrame {
             content.add(Box.createVerticalStrut(10));
         }
 
-        // Маршрут
         StringBuilder routeSb = new StringBuilder("Маршрут: ");
         for (Report.ReportData.CityVisit visit : data.visits) {
             routeSb.append(visit.city.getName()).append(" → ");
@@ -90,7 +114,6 @@ public class ReportFrame extends JFrame {
         content.add(new JLabel(routeSb.toString()));
         content.add(Box.createVerticalStrut(10));
 
-        // По городам
         double currentFood = 0;
         for (Report.ReportData.CityVisit visit : data.visits) {
             content.add(getBoldLabel(String.format("Город: %s (%s)", visit.city.getName(), visit.city.getCityType())));
@@ -100,7 +123,7 @@ public class ReportFrame extends JFrame {
                 content.add(getColoredLabel("Атака успешна!", new Color(0, 153, 0)));
                 content.add(new JLabel("Добыча:"));
                 if (!visit.loots.isEmpty()) {
-                    java.util.Map<String, Integer> map = new java.util.LinkedHashMap<>();
+                    Map<String, Integer> map = new LinkedHashMap<>();
                     for (Loot loot : visit.loots) {
                         map.merge(loot.getName(), 1, Integer::sum);
                     }
@@ -117,22 +140,21 @@ public class ReportFrame extends JFrame {
                 content.add(getColoredLabel("⚠️ Викинги начали есть из добычи", Color.RED));
             }
             currentFood = visit.remainingFood;
-
             content.add(Box.createVerticalStrut(8));
         }
 
-        // Итоги
         JLabel lblSummary = new JLabel("------------ ИТОГИ ------------");
         lblSummary.setFont(lblSummary.getFont().deriveFont(Font.BOLD, 15));
         lblSummary.setForeground(Color.BLUE);
         content.add(lblSummary);
 
-        double leftovers = 0; // Остаток еды (меры) на момент финиша
+        double leftovers = 0;
         int totalPeople = vikingCount + data.totalSlaves;
 
         if (!data.visits.isEmpty()) {
             leftovers = data.visits.get(data.visits.size() - 1).remainingFood;
         }
+
         double possibleDays = (totalPeople > 0) ? leftovers / (totalPeople * 0.1) : 0;
 
         if (data.possible) {
@@ -170,9 +192,10 @@ public class ReportFrame extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
 
         JButton btnGo = new JButton("Поехать в поход");
-        btnGo.setEnabled(data.possible && enableGoButton); // не только possible, но и наш флаг
+        btnGo.setEnabled(data.possible && enableGoButton);
+
         btnGo.addActionListener(e -> {
-         if (data.possible) {
+            if (data.possible) {
                 int days = (int) Math.round(data.totalTime / 24);
                 Calendar.DateRangeResult result = Calendar.calculateDateRange(days);
                 if (result == null) {
@@ -183,40 +206,46 @@ public class ReportFrame extends JFrame {
                 takeFoodFromInventoryAndAddLeftovers(data);
                 addSlavesAndLoot(data);
                 Vikings.increaseVikingsAge();
-
-                // Обновить отображение
                 SatelitePanel.refreshVikingsList();
-                
                 JOptionPane.showMessageDialog(this, "Добыча успешно добавлена в инвентарь!");
-
-                // Сохраняем в историю набега с выбранной датой
                 AttackHistoryManager.getInstance().addAttack(data, result.startDate, days);
             } else {
                 JOptionPane.showMessageDialog(this, "Поход неосуществим!");
-            }});
+            }
+        });
 
         JPanel panelButtons = new JPanel();
         if (enableGoButton) {
-            panelButtons.add(btnGo); // кнопка есть только если enableGoButton
+            panelButtons.add(btnGo);
         }
         add(panelButtons, BorderLayout.SOUTH);
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
-
-        // Очистка после отображения
         currentVikingNames.clear();
     }
 
+    /**
+     * Рассчитывает, какое количество еды нужно забрать из инвентаря,
+     * и обновляет запасы с учётом остатков после похода.
+     *
+     * @param data данные отчёта о походе
+     */
     private void takeFoodFromInventoryAndAddLeftovers(Report.ReportData data) {
         double leftovers = 0;
         if (!data.visits.isEmpty()) {
             leftovers = data.visits.get(data.visits.size() - 1).remainingFood;
         }
+
         double reserve = 2 * vikingCount;
         Inventory.setFood(Inventory.getFood() - reserve + leftovers);
     }
 
+    /**
+     * Добавляет захваченных рабов и собранную добычу в инвентарь.
+     *
+     * @param data данные отчёта
+     */
     private void addSlavesAndLoot(Report.ReportData data) {
         Inventory.setSlaves(Inventory.getSlaves() + data.totalSlaves);
         for (Report.ReportData.CityVisit visit : data.visits) {
@@ -228,6 +257,13 @@ public class ReportFrame extends JFrame {
         }
     }
 
+    /**
+     * Создаёт JLabel с указанным цветом текста.
+     *
+     * @param text текст метки
+     * @param color цвет текста
+     * @return настроенный {@link JLabel}
+     */
     private JLabel getColoredLabel(String text, Color color) {
         JLabel label = new JLabel(text);
         label.setForeground(color);
@@ -235,6 +271,12 @@ public class ReportFrame extends JFrame {
         return label;
     }
 
+    /**
+     * Создаёт JLabel с жирным стилем текста.
+     *
+     * @param text текст метки
+     * @return настроенный {@link JLabel}
+     */
     private JLabel getBoldLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(label.getFont().deriveFont(Font.BOLD, 14f));
