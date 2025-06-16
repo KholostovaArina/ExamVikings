@@ -4,16 +4,16 @@ drakkars:
     crewCapacity: 24
     rowersPairs: 6
     cargoCapacity: 13
-    weight: 24.5
+    weight: 24.4
   - id: 2
     name: "Огненный Клинок"
     crewCapacity: 38
-    rowersPairs: 7
+    rowersPairs: 9
     cargoCapacity: 16
     weight: 43.2
   - id: 3
     name: "Буревестник"
-    crewCapacity: 17
+    crewCapacity: 20
     rowersPairs: 5
     cargoCapacity: 10
     weight: 35.0
@@ -25,7 +25,7 @@ drakkars:
     weight: 52.8
   - id: 5
     name: "Стремительный Лосось"
-    crewCapacity: 15
+    crewCapacity: 14
     rowersPairs: 4
     cargoCapacity: 8
     weight: 20.0

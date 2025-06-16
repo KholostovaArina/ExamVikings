@@ -2,6 +2,7 @@ package EntityManager;
 
 import Entity.Viking;
 import Reading.SQLReader;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -19,16 +20,19 @@ public class Vikings {
      public static void deleteOldVikingByID(int id){
          allVikings.remove(id);
      }
-     
-     public static void increaseVikingsAge() {
-        if (allVikings == null || allVikings.isEmpty()) return;
+    
+    public static void increaseVikingsAge() {
+        if (allVikings == null || allVikings.isEmpty()) {
+            return;
+        }
 
-        for (Viking v : allVikings) {
+        Iterator<Viking> it = allVikings.iterator();
+        while (it.hasNext()) {
+            Viking v = it.next();
             v.setAge(v.getAge() + 1);
-            if (v.getAge()>=55){
-                allVikings.remove(v);
+            if (v.getAge() >= 55) {
+                it.remove(); // безопасно удаляем
             }
         }
-        
     }
 }

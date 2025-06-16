@@ -53,5 +53,4 @@ public class SQLReader {
         }
         return vikings;
     }
-
 }

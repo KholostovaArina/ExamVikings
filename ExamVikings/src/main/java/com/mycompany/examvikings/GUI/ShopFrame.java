@@ -1,6 +1,5 @@
 package com.mycompany.examvikings.GUI;
 
-import Entity.*;
 import javax.swing.*;
 import java.awt.*;
 
@@ -19,6 +18,7 @@ public class ShopFrame {
         // Главная панель с BorderLayout
         JPanel mainPanel = new JPanel(new BorderLayout());
 
+        
         // PANELS FOR CARDLAYOUT
         CardLayout cardLayout = new CardLayout();
         JPanel centerPanel = new JPanel(cardLayout);
@@ -53,14 +53,4 @@ public class ShopFrame {
         frame.setUndecorated(false);
         frame.setVisible(true);
     }
-
-//    private static JPanel createBuyVikingPanel() {
-//        JPanel buyVikingPanel = new JPanel(new BorderLayout());
-//        buyVikingPanel.setBackground(Color.LIGHT_GRAY);
-//        JLabel silverLabel1 = new JLabel("Серебро : " + Inventory.getSilver());
-//        silverLabel1.setHorizontalAlignment(SwingConstants.RIGHT);
-//        buyVikingPanel.add(silverLabel1, BorderLayout.NORTH);
-//
-//        return buyVikingPanel;
-//    }
 }

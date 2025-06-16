@@ -47,11 +47,10 @@ public class MainFrame {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
         cardPanel.add(DrakkarPanel.create(), "DRAKKAR");
-        List<Viking> vikings = Vikings.getAllVikings();
-        cardPanel.add(SatelitePanel.create(vikings), "SATELLITE");
+        cardPanel.add(SatelitePanel.create(Vikings.getAllVikings()), "SATELLITE");
         cardPanel.add(RoutePanel.create(), "ROUTE");
         cardLayout.show(cardPanel, "DRAKKAR");
-
+        
         // Нижняя панель с кнопками "Назад" и "Далее"
         JPanel bottomLeftPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         JButton buttonBack = new JButton("Назад");

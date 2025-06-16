@@ -1,6 +1,5 @@
 package com.mycompany.examvikings.GUI.Prediction;
 
-import com.mycompany.examvikings.GUI.Prediction.SelectionPanel;
 import Design.Design;
 import Entity.Drakkar;
 import Reading.DrakkarLoader;
@@ -17,10 +16,13 @@ public class DrakkarPanel {
     private static int currentIndex = 0;
     private static JLabel mainImageLabel, nameLabel;
     private static JTextPane descriptionPane;
+    
+    public static JButton reloadButton;
+    public static JSplitPane splitPane;
 
     public static JSplitPane create() {
         drakkars = DrakkarLoader.loadDrakkars();
-        JSplitPane splitPane = new JSplitPane(
+        splitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT, createImagePanel(), createInfoPanel()
         );
         splitPane.setResizeWeight(0.7);
@@ -66,6 +68,19 @@ public class DrakkarPanel {
             }
         });
 
+        // обновление
+        reloadButton = new JButton("Обновить");
+        reloadButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        reloadButton.addActionListener(e -> {
+            drakkars = DrakkarLoader.loadDrakkars();
+            if (drakkars == null || drakkars.isEmpty()) {
+                currentIndex = 0;
+            } else if (currentIndex >= drakkars.size()) {
+                currentIndex = 0;
+            }
+            updateDrakkarDisplay();
+        });
+
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(new Color(220, 225, 240));
@@ -74,6 +89,7 @@ public class DrakkarPanel {
         panel.add(navPanel);
         panel.add(Box.createRigidArea(new Dimension(0, 24)));
         panel.add(selectButton);
+        panel.add(reloadButton);
         panel.add(Box.createVerticalGlue());
         return panel;
     }
@@ -81,8 +97,8 @@ public class DrakkarPanel {
     // Теперь принимаем Image (или ImageIcon, если тебе так удобнее)
     private static JButton navBtn(Image image, Runnable action) {
         ImageIcon icon = (image != null)
-            ? new ImageIcon(image.getScaledInstance(ARROW_SIZE, ARROW_SIZE, Image.SCALE_SMOOTH))
-            : placeholderIcon(ARROW_SIZE, "←→");
+                ? new ImageIcon(image.getScaledInstance(ARROW_SIZE, ARROW_SIZE, Image.SCALE_SMOOTH))
+                : placeholderIcon(ARROW_SIZE, "←→");
         JButton btn = new JButton(icon);
         btn.setContentAreaFilled(false);
         btn.setBorder(BorderFactory.createEmptyBorder());
@@ -119,31 +135,36 @@ public class DrakkarPanel {
         updateDrakkarDisplay();
     }
 
-    private static void updateDrakkarDisplay() {
-        if (drakkars == null || drakkars.isEmpty()) return;
-        Drakkar d = drakkars.get(currentIndex);
-        Image image = d.getImage();
-        mainImageLabel.setIcon(image != null
+   private static void updateDrakkarDisplay() {
+    if (drakkars == null || drakkars.isEmpty()) {
+        mainImageLabel.setIcon(null);
+        nameLabel.setText("Нет драккаров");
+        descriptionPane.setText("<html><div style='font-size:13pt; color:gray;'>Файл drakkars.yml пуст или не найден.</div></html>");
+        return;
+    }
+    Drakkar d = drakkars.get(currentIndex);
+    Image image = d.getImage();
+    mainImageLabel.setIcon(image != null
             ? new ImageIcon(image.getScaledInstance(MAIN_IMAGE_SIZE, MAIN_IMAGE_SIZE, Image.SCALE_SMOOTH))
             : placeholderIcon(MAIN_IMAGE_SIZE, "Драккар " + d.getId()));
-        nameLabel.setText(d.getName());
-        descriptionPane.setText(String.format(
-                "<html><div style='font-size:12pt; color:#2a2a2a; padding-top:10px'>" +
-                "<b>ID:</b> %s<br>" +
-                "<b>Тип:</b> %s<br>" +
-                "<b>Вместимость:</b> %d воинов<br>" +
-                "<b>Гребцы:</b> %d пар<br>" +
-                "<b>Грузоподъемность:</b> %d тонн<br>" +
-                "<b>Вес:</b> %.1f тонн" +
-                "</div></html>",
-                d.getId(),
-                getDrakkarType(d.getCrewCapacity()),
-                d.getCrewCapacity(),
-                d.getRowersPairs(),
-                d.getCargoCapacity(),
-                d.getWeight()
-        ));
-    }
+    nameLabel.setText(d.getName());
+    descriptionPane.setText(String.format(
+            "<html><div style='font-size:12pt; color:#2a2a2a; padding-top:10px'>" +
+                    "<b>ID:</b> %s<br>" +
+                    "<b>Тип:</b> %s<br>" +
+                    "<b>Вместимость:</b> %d воинов<br>" +
+                    "<b>Гребцы:</b> %d пар<br>" +
+                    "<b>Грузоподъемность:</b> %d тонн<br>" +
+                    "<b>Вес:</b> %.1f тонн" +
+                    "</div></html>",
+            d.getId(),
+            getDrakkarType(d.getCrewCapacity()),
+            d.getCrewCapacity(),
+            d.getRowersPairs(),
+            d.getCargoCapacity(),
+            d.getWeight()
+    ));
+}
 
     private static String getDrakkarType(int capacity) {
         if (capacity >= 50) return "Боевой драккар (большой)";

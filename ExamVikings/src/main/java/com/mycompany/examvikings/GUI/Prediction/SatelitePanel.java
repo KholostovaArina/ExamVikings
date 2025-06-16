@@ -1,7 +1,7 @@
 package com.mycompany.examvikings.GUI.Prediction;
 
-import com.mycompany.examvikings.GUI.Prediction.SelectionPanel;
 import Entity.Viking;
+import EntityManager.Vikings;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
@@ -243,5 +243,19 @@ public class SatelitePanel {
     private static String getDefaultInfo() {
         return "<html><div style='text-align:center; padding:20px;'>" +
                "Нажмите на миниатюру спутника,<br>чтобы увидеть подробную информацию</div></html>";
+    }
+    
+    public static void refreshVikingsList() {
+        allVikings = Vikings.getAllVikings();   // забрать новый список, уже с выбывшими
+        // Теперь пересоздаём thumbnailsPanel
+        thumbnailsPanel.removeAll();
+        for (Viking v : allVikings) {
+            if (v.getAge() < 55) { // дополнительная страховка, если вдруг что
+                thumbnailsPanel.add(createThumbnailButton(v));
+            }
+        }
+        thumbnailsPanel.revalidate();
+        thumbnailsPanel.repaint();
+        updateThumbnailsTitle(); // если нужно обновить заголовок
     }
 }

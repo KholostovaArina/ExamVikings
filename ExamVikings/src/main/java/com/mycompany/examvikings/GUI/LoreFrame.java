@@ -1,7 +1,6 @@
 package com.mycompany.examvikings.GUI;
 
 import Design.Design;
-import EntityManager.Vikings;
 import javax.swing.*;
 import java.awt.*;
 

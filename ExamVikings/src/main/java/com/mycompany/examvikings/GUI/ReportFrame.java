@@ -3,6 +3,7 @@ package com.mycompany.examvikings.GUI;
 import EntityManager.AttackHistoryManager;
 import Entity.*;
 import EntityManager.Vikings;
+import com.mycompany.examvikings.GUI.Prediction.SatelitePanel;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -171,6 +172,10 @@ public class ReportFrame extends JFrame {
                 takeFoodFromInventoryAndAddLeftovers(data);
                 addSlavesAndLoot(data);
                 Vikings.increaseVikingsAge();
+
+                // Обновить отображение
+                SatelitePanel.refreshVikingsList();
+                
                 JOptionPane.showMessageDialog(this, "Добыча успешно добавлена в инвентарь!");
 
                 // Сохраняем в историю набега с выбранной датой
