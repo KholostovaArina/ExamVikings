@@ -1,5 +1,7 @@
 package com.mycompany.examvikings.GUI;
 
+import EntityManager.AttackHistoryEntry;
+import EntityManager.AttackHistoryManager;
 import Entity.Report;
 import javax.swing.*;
 import java.awt.*;
@@ -50,14 +52,6 @@ public class HistoryAttacks extends JFrame {
                 }
             }
         });
-
-        // Кнопка закрытия
-        JButton closeButton = new JButton("Закрыть");
-        closeButton.addActionListener(e -> dispose());
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(closeButton);
-        add(buttonPanel, BorderLayout.SOUTH);
 
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override

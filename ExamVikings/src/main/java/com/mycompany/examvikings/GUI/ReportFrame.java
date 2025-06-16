@@ -1,5 +1,6 @@
 package com.mycompany.examvikings.GUI;
 
+import EntityManager.AttackHistoryManager;
 import Entity.*;
 import EntityManager.Vikings;
 import javax.swing.*;

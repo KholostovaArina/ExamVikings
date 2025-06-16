@@ -25,6 +25,10 @@ public class Vikings {
 
         for (Viking v : allVikings) {
             v.setAge(v.getAge() + 1);
+            if (v.getAge()>=55){
+                allVikings.remove(v);
+            }
         }
+        
     }
 }

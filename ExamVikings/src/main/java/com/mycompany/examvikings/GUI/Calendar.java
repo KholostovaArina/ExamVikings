@@ -115,46 +115,53 @@ public class Calendar extends JDialog {
         return selectedStartDate != null ? selectedStartDate.plusDays(days) : null;
     }
 
-public static class DateRangeResult {
-    public final LocalDate startDate;
-    public final LocalDate endDate;
+    public static class DateRangeResult {
 
-    public DateRangeResult(LocalDate start, LocalDate end) {
-        this.startDate = start;
-        this.endDate = end;
+        public final LocalDate startDate;
+        public final LocalDate endDate;
+
+        public DateRangeResult(LocalDate start, LocalDate end) {
+            this.startDate = start;
+            this.endDate = end;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%d %s — %d %s %d",
+                    startDate.getDayOfMonth(), getMonthName(startDate.getMonthValue()),
+                    endDate.getDayOfMonth(), getMonthName(endDate.getMonthValue()), endDate.getYear());
+        }
     }
 
-    @Override
-    public String toString() {
-        return String.format("%d %s — %d %s %d",
-                startDate.getDayOfMonth(), getMonthName(startDate.getMonthValue()),
-                endDate.getDayOfMonth(), getMonthName(endDate.getMonthValue()), endDate.getYear());
+    public static DateRangeResult calculateDateRange(int days) {
+        Calendar dialog = new Calendar((JFrame) null, days);
+        dialog.setVisible(true);
+
+        if (!dialog.isConfirmed()) {
+            return null;
+        }
+
+        LocalDate startDate = dialog.getSelectedStartDate();
+        LocalDate endDate = startDate.plusDays(days);
+        currentYear++; // Увеличиваем год после успешного похода
+
+        return new DateRangeResult(startDate, endDate);
     }
-}
 
-public static DateRangeResult calculateDateRange(int days) {
-    Calendar dialog = new Calendar((JFrame) null, days);
-    dialog.setVisible(true);
-
-    if (!dialog.isConfirmed()) {
-        return null;
-    }
-
-    LocalDate startDate = dialog.getSelectedStartDate();
-    LocalDate endDate = startDate.plusDays(days);
-    currentYear++; // Увеличиваем год после успешного похода
-
-    return new DateRangeResult(startDate, endDate);
-}
-
-    static String getMonthName(int monthValue) {
+    public static String getMonthName(int monthValue) {
         return switch (monthValue) {
-            case 5 -> "мая";
-            case 6 -> "июня";
-            case 7 -> "июля";
-            case 8 -> "августа";
-            case 9 -> "сентября";
-            default -> "";
+            case 5 ->
+                "мая";
+            case 6 ->
+                "июня";
+            case 7 ->
+                "июля";
+            case 8 ->
+                "августа";
+            case 9 ->
+                "сентября";
+            default ->
+                "";
         };
     }
 
@@ -164,6 +171,5 @@ public static DateRangeResult calculateDateRange(int days) {
     public static int getCurrentYear() {
         return currentYear;
     }
-    
-    
+
 }

@@ -1,6 +1,7 @@
-package com.mycompany.examvikings.GUI;
+package EntityManager;
 
 import Entity.Report;
+import com.mycompany.examvikings.GUI.Calendar;
 import java.time.LocalDate;
 
 public class AttackHistoryEntry {

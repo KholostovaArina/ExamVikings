@@ -1,6 +1,5 @@
 package com.mycompany.examvikings.GUI.Prediction;
 
-import Reading.SQLReader;
 import Entity.Viking;
 import EntityManager.Vikings;
 import com.mycompany.examvikings.GUI.HomeScreen;
@@ -8,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class MainFrame {
     private static JPanel cardPanel;
@@ -47,7 +47,7 @@ public class MainFrame {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
         cardPanel.add(DrakkarPanel.create(), "DRAKKAR");
-        java.util.List<Viking> vikings = Vikings.getAllVikings();
+        List<Viking> vikings = Vikings.getAllVikings();
         cardPanel.add(SatelitePanel.create(vikings), "SATELLITE");
         cardPanel.add(RoutePanel.create(), "ROUTE");
         cardLayout.show(cardPanel, "DRAKKAR");

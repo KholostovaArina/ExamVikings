@@ -1,4 +1,4 @@
-package com.mycompany.examvikings.GUI;
+package EntityManager;
 
 import Entity.Report;
 import java.time.LocalDate;

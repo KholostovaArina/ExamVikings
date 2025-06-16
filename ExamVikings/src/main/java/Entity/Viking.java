@@ -93,15 +93,4 @@ public final class Viking {
         }
         this.activityCoefficient = activityCoefficient;
     }
-
-    @Override
-    public String toString() {
-        return "Спутник{" +
-                "имя='" + name + '\'' +
-                ", пол='" + gender + '\'' +
-                ", род='" + clan + '\'' +
-                ", возраст=" + age +
-                ", коэффициент активности=" + activityCoefficient +
-                '}';
-    }
 }

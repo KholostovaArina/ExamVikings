@@ -4,8 +4,7 @@ import Entity.*;
 import EntityManager.HistoryReportsManager;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.List;
 
 public class HistoryReports extends JFrame {
@@ -42,27 +41,25 @@ public class HistoryReports extends JFrame {
         // Инициализируем отображение
         updateContent();
 
-        // Кнопка "Открыть отчет"
-        JButton openButton = new JButton("Открыть отчет");
-        openButton.addActionListener(new ActionListener() {
+        // ----- Вот здесь добавлен MouseListener -----
+        reportList.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                int index = reportList.getSelectedIndex();
-                if (index != -1) {
-                    Report.ReportData selectedReport = HistoryReportsManager.getInstance().getReport(index);
-                    if (selectedReport != null) {
-                        ReportFrame frame = new ReportFrame();
-                        frame.showReport(selectedReport);
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2 && !reportList.isSelectionEmpty()) {
+                    int index = reportList.getSelectedIndex();
+                    if (index != -1) {
+                        Report.ReportData selectedReport = HistoryReportsManager.getInstance().getReport(index);
+                        if (selectedReport != null) {
+                            ReportFrame frame = new ReportFrame();
+                            frame.showReport(selectedReport);
+                        }
                     }
                 }
             }
         });
 
+        // Кнопку "Открыть отчет" убрал — она больше не нужна
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(openButton);
-        add(buttonPanel, BorderLayout.SOUTH);
-        
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosed(java.awt.event.WindowEvent e) {
@@ -81,15 +78,15 @@ public class HistoryReports extends JFrame {
 
     private void loadHistory() {
         listModel.clear();
-        
+
         List<Report.ReportData> reports = HistoryReportsManager.getInstance().getHistory();
         for (int i = 0; i < reports.size(); i++) {
             listModel.addElement("Отчет №" + reports.get(i).reportId);
         }
-        
+
         updateContent();
     }
-    
+
     @Override
     public void setVisible(boolean visible) {
         if (visible) {

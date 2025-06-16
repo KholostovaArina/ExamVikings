@@ -24,7 +24,7 @@ public class ShopFrame {
         JPanel centerPanel = new JPanel(cardLayout);
 
         // Панель 1 — серая
-        JPanel buyVikingPanel = createBuyVikingPanel();
+        JPanel buyVikingPanel = (new ShopVikingsPanel()).create();
 
         // Панель 2 — белая
         JPanel sellInventoryPanel = (new SellInventoryPanel()).create();
@@ -54,13 +54,13 @@ public class ShopFrame {
         frame.setVisible(true);
     }
 
-    private static JPanel createBuyVikingPanel() {
-        JPanel buyVikingPanel = new JPanel(new BorderLayout());
-        buyVikingPanel.setBackground(Color.LIGHT_GRAY);
-        JLabel silverLabel1 = new JLabel("Серебро : " + Inventory.getSilver());
-        silverLabel1.setHorizontalAlignment(SwingConstants.RIGHT);
-        buyVikingPanel.add(silverLabel1, BorderLayout.NORTH);
-
-        return buyVikingPanel;
-    }
+//    private static JPanel createBuyVikingPanel() {
+//        JPanel buyVikingPanel = new JPanel(new BorderLayout());
+//        buyVikingPanel.setBackground(Color.LIGHT_GRAY);
+//        JLabel silverLabel1 = new JLabel("Серебро : " + Inventory.getSilver());
+//        silverLabel1.setHorizontalAlignment(SwingConstants.RIGHT);
+//        buyVikingPanel.add(silverLabel1, BorderLayout.NORTH);
+//
+//        return buyVikingPanel;
+//    }
 }
