@@ -50,6 +50,7 @@ public class HistoryReports extends JFrame {
                     if (index != -1) {
                         Report.ReportData selectedReport = HistoryReportsManager.getInstance().getReport(index);
                         if (selectedReport != null) {
+                            
                             ReportFrame frame = new ReportFrame();
                             frame.showReport(selectedReport);
                         }

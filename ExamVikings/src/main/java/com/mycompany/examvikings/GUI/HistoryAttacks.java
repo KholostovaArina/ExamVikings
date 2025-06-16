@@ -47,7 +47,7 @@ public class HistoryAttacks extends JFrame {
                     Report.ReportData data = AttackHistoryManager.getInstance().getAttack(index);
                     if (data != null) {
                         ReportFrame frame = new ReportFrame();
-                        frame.showReport(data); // открываем существующий отчет
+                        frame.showReport(data, false); // открываем существующий отчет
                     }
                 }
             }

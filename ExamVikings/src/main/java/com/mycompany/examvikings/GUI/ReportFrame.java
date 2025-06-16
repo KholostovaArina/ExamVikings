@@ -14,6 +14,7 @@ public class ReportFrame extends JFrame {
 
     private int vikingCount = 0;
     private List<String> currentVikingNames = new ArrayList<>(); // <-- добавляем список имён
+    private boolean enableGoButton = true; // по умолчанию видна
 
     public ReportFrame() {
         setTitle("Отчёт о походе");
@@ -36,12 +37,22 @@ public class ReportFrame extends JFrame {
     }
 
     /**
-     * Отображение отчёта (history=true — только для просмотра: нельзя забрать лут)
+     * Отображение отчёта (history=true — только для просмотра: нельзя забрать
+     * лут)
      */
-    public void showReport(Report.ReportData data) {
-        this.currentVikingNames.clear(); // <-- не отображаем викингов для истории
+    public void showReport(Report.ReportData data, boolean enableGoButton) {
+        this.currentVikingNames.clear();
+        this.enableGoButton = enableGoButton;
         showThisReport(data);
     }
+
+    public void showReport(Report.ReportData data) {
+        showReport(data, true); // по умолчанию из истории отчетов — кнопка видна
+    }
+
+
+
+
 
     /**
      * Универсальный отображатель отчёта
@@ -159,9 +170,9 @@ public class ReportFrame extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
 
         JButton btnGo = new JButton("Поехать в поход");
-        btnGo.setEnabled(data.possible);
+        btnGo.setEnabled(data.possible && enableGoButton); // не только possible, но и наш флаг
         btnGo.addActionListener(e -> {
-            if (data.possible) {
+         if (data.possible) {
                 int days = (int) Math.round(data.totalTime / 24);
                 Calendar.DateRangeResult result = Calendar.calculateDateRange(days);
                 if (result == null) {
@@ -182,11 +193,12 @@ public class ReportFrame extends JFrame {
                 AttackHistoryManager.getInstance().addAttack(data, result.startDate, days);
             } else {
                 JOptionPane.showMessageDialog(this, "Поход неосуществим!");
-            }
-        });
+            }});
 
         JPanel panelButtons = new JPanel();
-        panelButtons.add(btnGo);
+        if (enableGoButton) {
+            panelButtons.add(btnGo); // кнопка есть только если enableGoButton
+        }
         add(panelButtons, BorderLayout.SOUTH);
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
