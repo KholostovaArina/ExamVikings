@@ -28,7 +28,7 @@ public class SellInventoryPanel {
 
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setBackground(new Color(224, 222, 202));
+        mainPanel.setBackground(Color.WHITE);
 
         createSilverPanel();
         addSlavesSection();

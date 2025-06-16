@@ -8,21 +8,18 @@ import Design.Design;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShopVikingsPanel {
 
-    private static final int MAIN_IMAGE_SIZE = 220, ARROW_SIZE = 50;
+    private static final int MAIN_IMAGE_SIZE = 400, ARROW_SIZE = 70;
     private List<Viking> vikingChoices;
     private int currentIndex = 0;
     private JLabel silverLabel, mainImageLabel, nameLabel;
     private JTextPane infoPane;
 
-    /**
-     * Создаёт панель "Магазин викингов".
-     * Лейбл серебра передаётся снаружи (чтобы быть общим для магазина).
-     */
     public JPanel create(JLabel sharedSilverLabel) {
         this.silverLabel = sharedSilverLabel;
 
@@ -32,7 +29,7 @@ public class ShopVikingsPanel {
         }
         currentIndex = 0;
 
-        // == Верхний лейбл серебра (общий для магазина) ==
+        // == Верхний лейбл серебра ==
         silverLabel.setFont(new Font("Arial", Font.BOLD, 16));
         silverLabel.setForeground(new Color(30, 53, 102));
         silverLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 12, 10));
@@ -44,7 +41,6 @@ public class ShopVikingsPanel {
         mainImageLabel.setVerticalAlignment(SwingConstants.CENTER);
         mainImageLabel.setBackground(new Color(235, 242, 250));
         mainImageLabel.setOpaque(true);
-        mainImageLabel.setBorder(BorderFactory.createLineBorder(new Color(180, 180, 200), 2, true));
         mainImageLabel.setPreferredSize(new Dimension(MAIN_IMAGE_SIZE, MAIN_IMAGE_SIZE));
 
         JButton prevBtn = navBtn(Design.getLeftImage(), () -> move(-1));
@@ -83,10 +79,8 @@ public class ShopVikingsPanel {
         infoPane.setPreferredSize(new Dimension(210, 100));
 
         Design.CustomButton btnBuy = new Design.CustomButton("Купить викинга");
-        btnBuy.setBackground(new Color(130, 189, 120));
         btnBuy.setForeground(Color.WHITE);
         btnBuy.setFocusPainted(false);
-        btnBuy.setBorder(BorderFactory.createEmptyBorder(9, 24, 9, 24));
         btnBuy.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // --- Покупка ---
@@ -105,7 +99,6 @@ public class ShopVikingsPanel {
                     currentIndex = 0;
                 }
                 updateDisplay();
-                // !!! Optionally: ShopFrame.refreshAllSilver(); если тебе надо обновить и на другой панели
             } else {
                 JOptionPane.showMessageDialog(null,
                         "Недостаточно серебра! Нужно 200.",
@@ -124,7 +117,6 @@ public class ShopVikingsPanel {
         rightPanel.add(Box.createVerticalGlue());
 
         // == Объединяем слева-справа ==
-
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
         centerPanel.setOpaque(false);
@@ -150,7 +142,9 @@ public class ShopVikingsPanel {
     }
 
     private void move(int d) {
-        if (vikingChoices.size() == 0) return;
+        if (vikingChoices.size() == 0) {
+            return;
+        }
         currentIndex = (currentIndex + d + vikingChoices.size()) % vikingChoices.size();
         updateDisplay();
     }
@@ -162,30 +156,61 @@ public class ShopVikingsPanel {
             infoPane.setText("");
             return;
         }
+
         Viking v = vikingChoices.get(currentIndex);
-        // Фото
-        try {
-            ImageIcon icon = new ImageIcon(v.getPhotoPath());
-            if (icon.getIconWidth() > 0) {
-                Image img = icon.getImage().getScaledInstance(MAIN_IMAGE_SIZE, MAIN_IMAGE_SIZE, Image.SCALE_SMOOTH);
-                mainImageLabel.setIcon(new ImageIcon(img));
-            } else {
-                mainImageLabel.setIcon(null);
-            }
-        } catch (Exception e) {
-            mainImageLabel.setIcon(null);
-        }
+
+        // Обновляем имя и информацию
         nameLabel.setText("<html><b>" + v.getName() + "</b></html>");
         infoPane.setText(String.format(
                 "<html><div style='font-size:12pt; color:#253270; padding:7px'>"
-                        + "Пол: %s<br>"
-                        + "Клан: %s<br>"
-                        + "Возраст: %d лет<br>"
-                        + "Коэфф. активности: %.1f<br>"
-                        + "ID: %d"
-                        + "</div></html>",
+                + "Пол: %s<br>"
+                + "Клан: %s<br>"
+                + "Возраст: %d лет<br>"
+                + "Коэфф. активности: %.1f<br>"
+                + "ID: %d"
+                + "</div></html>",
                 v.getGender(), v.getClan(), v.getAge(), v.getActivityCoefficient(), v.getId())
         );
+
+        // Загружаем фото
+        mainImageLabel.setIcon(null); // Очистка предыдущего изображения
+        mainImageLabel.setText(""); // Очистка текста
+        String photoPath = v.getPhotoPath();
+
+        System.out.println("[DEBUG] Пытаюсь загрузить фото по пути: " + photoPath);
+
+        if (photoPath == null || photoPath.isEmpty()) {
+            System.err.println("[ERROR] Путь к фото пустой");
+            mainImageLabel.setText("Путь к фото не указан");
+            return;
+        }
+
+        // Нормализуем путь
+        if (!photoPath.startsWith("/")) {
+            photoPath = "/" + photoPath;
+        }
+
+        URL imgUrl = ShopVikingsPanel.class.getResource(photoPath);
+
+        if (imgUrl == null) {
+            // Пробуем через контекстный загрузчик
+            imgUrl = Thread.currentThread().getContextClassLoader().getResource(photoPath.substring(1));
+        }
+
+        if (imgUrl != null) {
+            try {
+                ImageIcon icon = new ImageIcon(imgUrl);
+                Image img = icon.getImage().getScaledInstance(MAIN_IMAGE_SIZE, MAIN_IMAGE_SIZE, Image.SCALE_SMOOTH);
+                mainImageLabel.setIcon(new ImageIcon(img));
+            } catch (Exception ex) {
+                System.err.println("[ERROR] Не удалось загрузить изображение: " + ex.getMessage());
+                mainImageLabel.setText("Ошибка загрузки изображения");
+                ex.printStackTrace();
+            }
+        } else {
+            System.err.println("[ERROR] Фото не найдено по пути: " + photoPath);
+            mainImageLabel.setText("Фото не найдено");
+        }
     }
 
     private JButton navBtn(Image image, Runnable action) {
@@ -193,8 +218,9 @@ public class ShopVikingsPanel {
         btn.setContentAreaFilled(false);
         btn.setFocusPainted(false);
         btn.setBorder(BorderFactory.createEmptyBorder());
-        if (image != null)
+        if (image != null) {
             btn.setIcon(new ImageIcon(image.getScaledInstance(ARROW_SIZE, ARROW_SIZE, Image.SCALE_SMOOTH)));
+        }
         btn.addActionListener(e -> action.run());
         return btn;
     }
