@@ -221,17 +221,17 @@ public class SatelitePanel {
 
         // Обновление информации
         infoLabel.setText(String.format(
-            "<html><div style='padding:10px; text-align:left;'>" +
-            "<b>Имя:</b> %s<br>" +
-            "<b>Пол:</b> %s<br>" +
-            "<b>Род:</b> %s<br>" +
-            "<b>Возраст:</b> %d лет<br>" +
-            "<b>Коэффициент активности:</b> %.2f</div></html>",
-            viking.getName(),
-            viking.getGender(),
-            viking.getClan(),
-            viking.getAge(),
-            viking.getActivityCoefficient()
+                "<html><div style='padding:10px; text-align:left;'>"
+                + "<b>Имя:</b> %s<br>"
+                + "<b>Пол:</b> %s<br>"
+                + "<b>Род:</b> %s<br>"
+                + "<b>Возраст:</b> %d лет<br>"
+                + "<b>Коэффициент активности:</b> %.2f</div></html>",
+                viking.getName(),
+                viking.getGender(),
+                viking.getClan(),
+                viking.getAge(),
+                viking.getActivityCoefficient()
         ));
     }
 
@@ -241,21 +241,32 @@ public class SatelitePanel {
     }
 
     private static String getDefaultInfo() {
-        return "<html><div style='text-align:center; padding:20px;'>" +
-               "Нажмите на миниатюру спутника,<br>чтобы увидеть подробную информацию</div></html>";
+        return "<html><div style='text-align:center; padding:20px;'>"
+                + "Нажмите на миниатюру спутника,<br>чтобы увидеть подробную информацию</div></html>";
     }
-    
+
     public static void refreshVikingsList() {
-        allVikings = Vikings.getAllVikings();   // забрать новый список, уже с выбывшими
-        // Теперь пересоздаём thumbnailsPanel
-        thumbnailsPanel.removeAll();
+        allVikings = Vikings.getAllVikings();
+        // убираем старых из выбранных
+        selectedVikings.removeIf(v -> v.getAge() >= 55);
+
+        // Очищаем grid (панель миниатюр)
+        JPanel gridPanel = (JPanel) thumbnailsWrapperPanel.getComponent(1); // т.к. gridPanel всегда в CENTER
+        gridPanel.removeAll();
+
         for (Viking v : allVikings) {
-            if (v.getAge() < 55) { // дополнительная страховка, если вдруг что
-                thumbnailsPanel.add(createThumbnailButton(v));
+            // только молодых
+            if (v.getAge() < 55) {
+                gridPanel.add(createThumbnailButton(v));
             }
         }
-        thumbnailsPanel.revalidate();
-        thumbnailsPanel.repaint();
-        updateThumbnailsTitle(); // если нужно обновить заголовок
+        // Обновить label над фото и сетку
+        updateThumbnailsTitle();
+
+        gridPanel.revalidate();
+        gridPanel.repaint();
+        thumbnailsWrapperPanel.revalidate();
+        thumbnailsWrapperPanel.repaint();
     }
+
 }
