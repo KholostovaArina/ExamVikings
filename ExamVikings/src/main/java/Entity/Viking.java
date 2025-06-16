@@ -93,4 +93,15 @@ public final class Viking {
         }
         this.activityCoefficient = activityCoefficient;
     }
+    
+        // Метод, возвращающий HTML-информацию о викинге
+    public String getInfoHTML() {
+        return "<div style='padding:10px; text-align:left;'>" +
+               "<b>Имя:</b> " + name + "<br>" +
+               "<b>Пол:</b> " + gender + "<br>" +
+               "<b>Клан:</b> " + clan + "<br>" +
+               "<b>Возраст:</b> " + age + " лет<br>" +
+               "<b>Коэффициент активности:</b> " + String.format("%.2f", activityCoefficient) +
+               "</div>";
+    }
 }

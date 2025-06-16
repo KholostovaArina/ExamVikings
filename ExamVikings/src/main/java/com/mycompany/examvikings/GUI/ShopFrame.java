@@ -1,56 +1,58 @@
 package com.mycompany.examvikings.GUI;
 
+import Entity.Inventory;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class ShopFrame {
 
+    private static JLabel sharedSilverLabel = new JLabel("Серебро: " + Inventory.getSilver(), SwingConstants.RIGHT);
+
     public static void createShopFrame() {
-        JFrame frame = new JFrame("Shop");
+        JFrame frame = new JFrame("Магазин Викингов");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+        frame.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosed(java.awt.event.WindowEvent e) {
+            public void windowClosed(WindowEvent e) {
                 new HomeScreen();
             }
         });
 
-        // Главная панель с BorderLayout
         JPanel mainPanel = new JPanel(new BorderLayout());
-
-        
-        // PANELS FOR CARDLAYOUT
         CardLayout cardLayout = new CardLayout();
         JPanel centerPanel = new JPanel(cardLayout);
 
-        // Панель 1 — серая
-        JPanel buyVikingPanel = (new ShopVikingsPanel()).create();
+        ShopVikingsPanel shopVikingsPanel = new ShopVikingsPanel();
+        SellInventoryPanel sellInventoryPanel = new SellInventoryPanel();
 
-        // Панель 2 — белая
-        JPanel sellInventoryPanel = (new SellInventoryPanel()).create();
+        JPanel buyPanel = shopVikingsPanel.create(sharedSilverLabel);
+        JPanel sellPanel = sellInventoryPanel.create(sharedSilverLabel);
 
-        // Добавляем панели с именами
-        centerPanel.add(buyVikingPanel, "BUY");
-        centerPanel.add(sellInventoryPanel, "SELL");
+        centerPanel.add(buyPanel, "BUY");
+        centerPanel.add(sellPanel, "SELL");
 
-        // Панель кнопок снизу
         JPanel buttonsPanel = new JPanel();
         JButton buyButton = new JButton("Купить викинга");
         JButton sellButton = new JButton("Продать инвентарь");
 
-        buttonsPanel.add(buyButton);
-        buttonsPanel.add(sellButton);
-
-        // Обработчики кнопок
         buyButton.addActionListener(e -> cardLayout.show(centerPanel, "BUY"));
         sellButton.addActionListener(e -> cardLayout.show(centerPanel, "SELL"));
+
+        buttonsPanel.add(buyButton);
+        buttonsPanel.add(sellButton);
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(buttonsPanel, BorderLayout.SOUTH);
 
         frame.setContentPane(mainPanel);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setUndecorated(false);
+        frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    public static void refreshAllSilver() {
+        sharedSilverLabel.setText("Серебро: " + Inventory.getSilver());
     }
 }
