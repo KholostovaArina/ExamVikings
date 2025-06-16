@@ -1,5 +1,6 @@
 package com.mycompany.examvikings.GUI;
 
+import Design.Design;
 import Entity.Inventory;
 import Entity.Loot;
 import javax.swing.*;
@@ -27,18 +28,19 @@ public class SellInventoryPanel {
 
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setBackground(Color.WHITE);
+        mainPanel.setBackground(new Color(224, 222, 202));
 
         createSilverPanel();
         addSlavesSection();
         addLootGridSection();
         addSellButton();
+        Design.setFontForAllComponents(mainPanel, new Color(39, 44, 59));
+                
 
         return mainPanel;
     }
 
     private void createSilverPanel() {
-        silverLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         topPanel.add(silverLabel);
         topPanel.setOpaque(false);
@@ -123,11 +125,9 @@ public class SellInventoryPanel {
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel qtyLabel = new JLabel("В наличии: " + qty);
-        qtyLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         qtyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel sellLabel = new JLabel("Продать:");
-        sellLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         sellLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, 0, qty, 1));
@@ -149,7 +149,7 @@ public class SellInventoryPanel {
     }
 
     private void addSellButton() {
-        JButton sellButton = new JButton("Продать выбранное");
+        Design.CustomButton sellButton = new Design.CustomButton("Продать выбранное");
         sellButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         sellButton.addActionListener(this::confirmAndSell);
         mainPanel.add(Box.createVerticalStrut(20));

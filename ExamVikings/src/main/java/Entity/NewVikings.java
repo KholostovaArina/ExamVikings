@@ -12,9 +12,6 @@ public class NewVikings {
     private static final String[] CLANS = {
         "Скьёльдунги", "Инълинги", "Фолькунги", "Лёдинги"
     };
-    private static final String[] PHOTO_MINI = {
-        "img/vikings/m1.png", "img/vikings/m2.png", "img/vikings/f1.png", "img/vikings/f2.png"
-    };
     
     private static final Random random = new Random();
     private static int idCounter = 1000;
@@ -36,14 +33,14 @@ public class NewVikings {
         // Фото (примитивно: для мужчин — любые m*, для женщин — любые f*)
         String photoMiniPath, photoPath;
         if (gender.equals("Мужчина")) {
-            String[] maleMini = {"vikings/m1mini.png", "vikings/m2mini.png"};
-            String[] malePhoto = {"vikings/m1.png", "vikings/m2.png"};
+            String[] maleMini = {"/викинги/викинг12.png", "/викинги/викинг13.png"};
+            String[] malePhoto = {"/викинги/викинг3.png", "/викинги/викинг2.png"};
             int i = random.nextInt(maleMini.length);
             photoMiniPath = maleMini[i];
             photoPath = malePhoto[i];
         } else {
-            String[] femaleMini = {"vikings/f1mini.png", "vikings/f2mini.png"};
-            String[] femalePhoto = {"vikings/f1.png", "vikings/f2.png"};
+            String[] femaleMini = {"/викинги/викинг15.png", "/викинги/викинг110.png"};
+            String[] femalePhoto = {"/викинги/викинг5.png", "/викинги/викинг10.png"};
             int i = random.nextInt(femaleMini.length);
             photoMiniPath = femaleMini[i];
             photoPath = femalePhoto[i];

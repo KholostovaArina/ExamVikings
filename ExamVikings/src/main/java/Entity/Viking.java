@@ -19,7 +19,7 @@ public final class Viking {
         this.age = age;
         setActivityCoefficient(activityCoefficient);
         this.photoMiniPath = photoMiniPath;
-        this.photoPath = this.photoPath;
+        this.photoPath = photoPath;
     }
 
     // Геттеры и сеттеры
@@ -28,7 +28,7 @@ public final class Viking {
     }
 
     public void setPhotoMiniPath(String name) {
-        this.photoMiniPath = photoMiniPath;
+        this.photoMiniPath = name;
     }
     
     // Геттеры и сеттеры
@@ -37,7 +37,7 @@ public final class Viking {
     }
 
     public void setPhotoPath(String name) {
-        this.photoPath = photoPath;
+        this.photoPath = name;
     }    
     
     public int getId(){

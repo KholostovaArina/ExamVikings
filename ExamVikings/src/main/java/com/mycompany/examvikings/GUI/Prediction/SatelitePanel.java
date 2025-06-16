@@ -5,6 +5,7 @@ import Entity.Viking;
 import EntityManager.Vikings;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import javax.swing.*;
 import java.util.List;
@@ -84,12 +85,6 @@ public class SatelitePanel {
     }
 
     private static JButton createThumbnailButton(Viking v) {
-        
-  String photoPath = v.getPhotoPath();
-   System.out.println("photoPath = " + photoPath);
-   
-
-        
         JButton button = new JButton();
         button.setPreferredSize(new Dimension(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
         button.setToolTipText(v.getName());
@@ -250,44 +245,112 @@ public class SatelitePanel {
         splitPane.setBorder(null);
     }
 
-    private static void updateSatelliteInfo(Viking viking) {
-        nameLabel.setText(viking.getName());
+private static void updateSatelliteInfo(Viking viking) {
+    // 1. Обновляем имя викинга
+    nameLabel.setText(viking.getName());
+    
+    // 2. Обработка фотографии
+    photoLabel.setIcon(null);
+    photoLabel.setText(""); // Очищаем текст
+    
+    String photoPath = viking.getPhotoPath();
+    System.out.println("[DEBUG] Пытаюсь загрузить фото по пути: " + photoPath);
 
-        // Загружаем фото через ресурс пакета
-        String photoPath = viking.getPhotoPath(); // Например, "/викинги/викинг1.png"
-        URL imgUrl = SatelitePanel.class.getResource(photoPath);
-
-        if (imgUrl != null) {
-            ImageIcon icon = new ImageIcon(imgUrl);
-            photoLabel.setIcon(resizeIcon(icon, MAIN_PHOTO_SIZE, MAIN_PHOTO_SIZE));
-            photoLabel.setText("");
-        } else {
-            photoLabel.setIcon(null);
-            photoLabel.setText("Фото недоступно");
-            photoLabel.setForeground(Color.white);
-            photoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            photoLabel.setVerticalAlignment(SwingConstants.CENTER);
-        }
-
-
-        // обновляем остальные поля, как у вас
-        infoPanel.removeAll();
-        genderInfoLabel.setText("Пол: " + viking.getGender());
-        clanInfoLabel.setText("Род: " + viking.getClan());
-        ageInfoLabel.setText("Возраст: " + viking.getAge() + " лет");
-        activityInfoLabel.setText("Коэффициент активности: " + String.format("%.2f", viking.getActivityCoefficient()));
-
-        infoPanel.add(genderInfoLabel);
-        infoPanel.add(clanInfoLabel);
-        infoPanel.add(ageInfoLabel);
-        infoPanel.add(activityInfoLabel);
-
-        Design.setFontForAllComponents(infoPanel, Color.white);
-
-        infoPanel.revalidate();
-        infoPanel.repaint();
+    if (photoPath == null || photoPath.isEmpty()) {
+        showErrorImage("Нет пути к фото");
+        System.err.println("[ERROR] Путь к фото не указан");
+        updateVikingInfo(viking);
+        return;
     }
 
+    // Нормализация пути (добавляем / если отсутствует)
+    if (!photoPath.startsWith("/")) {
+        photoPath = "/" + photoPath;
+    }
+
+    try {
+        // Попробуем несколько способов загрузки
+        URL imgUrl = SatelitePanel.class.getResource(photoPath);
+        
+        if (imgUrl == null) {
+            // Попробуем через ClassLoader
+            imgUrl = Thread.currentThread().getContextClassLoader().getResource(photoPath.substring(1));
+        }
+
+        if (imgUrl != null) {
+            System.out.println("[DEBUG] Найдено изображение по URL: " + imgUrl);
+            ImageIcon icon = new ImageIcon(imgUrl);
+            
+            // Масштабируем с сохранением пропорций
+            Image scaledImage = icon.getImage().getScaledInstance(
+                MAIN_PHOTO_SIZE, 
+                MAIN_PHOTO_SIZE, 
+                Image.SCALE_SMOOTH
+            );
+            photoLabel.setIcon(new ImageIcon(scaledImage));
+        } else {
+            throw new FileNotFoundException("Изображение не найдено по пути: " + photoPath);
+        }
+    } catch (Exception e) {
+        System.err.println("[ERROR] Ошибка загрузки изображения: " + e.getMessage());
+        showErrorImage("Ошибка загрузки");
+    }
+
+    // 3. Обновляем информацию о викинге
+    updateVikingInfo(viking);
+}
+// Вынесем обновление информации в отдельный метод
+private static void updateVikingInfo(Viking viking) {
+    infoPanel.removeAll();
+    
+    genderInfoLabel.setText("Пол: " + viking.getGender());
+    clanInfoLabel.setText("Род: " + viking.getClan());
+    ageInfoLabel.setText("Возраст: " + viking.getAge() + " лет");
+    activityInfoLabel.setText("Активность: " + String.format("%.2f", viking.getActivityCoefficient()));
+    
+    infoPanel.add(genderInfoLabel);
+    infoPanel.add(clanInfoLabel);
+    infoPanel.add(ageInfoLabel);
+    infoPanel.add(activityInfoLabel);
+    
+    infoPanel.revalidate();
+    infoPanel.repaint();
+}
+private static void showErrorImage(String message) {
+    BufferedImage img = new BufferedImage(
+        MAIN_PHOTO_SIZE, 
+        MAIN_PHOTO_SIZE, 
+        BufferedImage.TYPE_INT_RGB
+    );
+    
+    Graphics2D g2d = img.createGraphics();
+    
+    // Красный фон для ошибки
+    g2d.setColor(new Color(255, 200, 200));
+    g2d.fillRect(0, 0, MAIN_PHOTO_SIZE, MAIN_PHOTO_SIZE);
+    
+    // Чёрная рамка
+    g2d.setColor(Color.BLACK);
+    g2d.drawRect(0, 0, MAIN_PHOTO_SIZE-1, MAIN_PHOTO_SIZE-1);
+    
+    // Текст ошибки
+    g2d.setColor(Color.RED);
+    g2d.setFont(new Font("Arial", Font.BOLD, 14));
+    
+    // Разбиваем текст на несколько строк, если он длинный
+    String[] lines = message.split(" ");
+    FontMetrics fm = g2d.getFontMetrics();
+    int y = MAIN_PHOTO_SIZE/2 - (fm.getHeight() * lines.length)/2 + fm.getAscent();
+    
+    for (String line : lines) {
+        int x = (MAIN_PHOTO_SIZE - fm.stringWidth(line)) / 2;
+        g2d.drawString(line, x, y);
+        y += fm.getHeight();
+    }
+    
+    g2d.dispose();
+    photoLabel.setIcon(new ImageIcon(img));
+}
     private static ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
         Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(img);

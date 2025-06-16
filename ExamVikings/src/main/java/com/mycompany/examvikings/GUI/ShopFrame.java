@@ -1,5 +1,6 @@
 package com.mycompany.examvikings.GUI;
 
+import Design.Design;
 import Entity.Inventory;
 import javax.swing.*;
 import java.awt.*;
@@ -34,8 +35,8 @@ public class ShopFrame {
         centerPanel.add(sellPanel, "SELL");
 
         JPanel buttonsPanel = new JPanel();
-        JButton buyButton = new JButton("Купить викинга");
-        JButton sellButton = new JButton("Продать инвентарь");
+        Design.CustomButton buyButton = new Design.CustomButton("Купить викинга");
+        Design.CustomButton sellButton = new Design.CustomButton("Продать инвентарь");
 
         buyButton.addActionListener(e -> cardLayout.show(centerPanel, "BUY"));
         sellButton.addActionListener(e -> cardLayout.show(centerPanel, "SELL"));

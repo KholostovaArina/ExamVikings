@@ -82,8 +82,7 @@ public class ShopVikingsPanel {
         infoPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         infoPane.setPreferredSize(new Dimension(210, 100));
 
-        JButton btnBuy = new JButton("Купить викинга");
-        btnBuy.setFont(new Font("Arial", Font.BOLD, 15));
+        Design.CustomButton btnBuy = new Design.CustomButton("Купить викинга");
         btnBuy.setBackground(new Color(130, 189, 120));
         btnBuy.setForeground(Color.WHITE);
         btnBuy.setFocusPainted(false);
