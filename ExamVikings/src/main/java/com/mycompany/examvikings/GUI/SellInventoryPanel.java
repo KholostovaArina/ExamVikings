@@ -189,39 +189,49 @@ public class SellInventoryPanel {
         performSale(hasSelection, slavesToSell);
     }
 
-    private void performSale(boolean hasSelection, int slavesToSell) {
-        SaleResult result = new SaleResult();
-        result.slavesSold = slavesToSell;
-        result.totalPrice += slavesToSell * 10;
+private void performSale(boolean hasSelection, int slavesToSell) {
+    SaleResult result = new SaleResult();
+    result.slavesSold = slavesToSell;
+    result.totalPrice += slavesToSell * 10;
 
-        // Продаем рабов
-        if (result.slavesSold > 0) {
-            Inventory.setSlaves(Inventory.getSlaves() - result.slavesSold);
-        }
-
-        // Продаем лут
-        for (int i = 0; i < lootSpinners.size(); i++) {
-            int toSell = (Integer) lootSpinners.get(i).getValue();
-            if (toSell <= 0) continue;
-            String name = lootNames.get(i);
-            int removed = removeLootItems(name, toSell);
-            if (removed > 0) {
-                result.totalPrice += removed * 10;
-                result.totalSold += removed;
-                result.soldItems.append(removed).append(" ").append(name).append("<br>");
-            }
-        }
-
-        // Добавляем серебро
-        Inventory.setSilver(Inventory.getSilver() + result.totalPrice);
-
-        // Обновляем UI
-        refreshSilver();
-        updateSlavesCount();
-
-        showResultMessage(result);
-        clearSelections();
+    // Продаем рабов
+    if (result.slavesSold > 0) {
+        Inventory.setSlaves(Inventory.getSlaves() - result.slavesSold);
     }
+
+    // Продаем лут
+    for (int i = 0; i < lootSpinners.size(); i++) {
+        int toSell = (Integer) lootSpinners.get(i).getValue();
+        if (toSell <= 0) continue;
+        String name = lootNames.get(i);
+        int removed = removeLootItems(name, toSell);
+        if (removed > 0) {
+            result.totalPrice += removed * 10;
+            result.totalSold += removed;
+            result.soldItems.append(removed).append(" ").append(name).append("<br>");
+        }
+    }
+
+    // Добавляем серебро
+    Inventory.setSilver(Inventory.getSilver() + result.totalPrice);
+
+    // Обновляем UI
+    refreshSilver();
+    updateSlavesCount();
+    updateLootDisplay(); // <<< Добавлено обновление лута
+
+    showResultMessage(result);
+    clearSelections();
+}
+
+// Новый метод для обновления отображения лута
+private void updateLootDisplay() {
+    lootGridPanel.removeAll(); // Очищаем старую сетку
+    Map<String, Integer> lootCounts = countLootItems(); // Получаем обновленные данные
+    createLootGrid(lootCounts); // Пересоздаем сетку
+    lootGridPanel.revalidate(); // Обновляем отображение
+    lootGridPanel.repaint();
+}
 
     private int removeLootItems(String name, int quantity) {
         List<Loot> products = Inventory.getProducts();

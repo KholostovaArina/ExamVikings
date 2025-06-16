@@ -14,6 +14,7 @@ public class ShopFrame {
     public static void createShopFrame() {
         JFrame frame = new JFrame("Магазин Викингов");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {

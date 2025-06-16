@@ -39,7 +39,6 @@ public class ShopVikingsPanel {
         mainImageLabel = new JLabel();
         mainImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         mainImageLabel.setVerticalAlignment(SwingConstants.CENTER);
-        mainImageLabel.setBackground(new Color(235, 242, 250));
         mainImageLabel.setOpaque(true);
         mainImageLabel.setPreferredSize(new Dimension(MAIN_IMAGE_SIZE, MAIN_IMAGE_SIZE));
 
@@ -64,14 +63,13 @@ public class ShopVikingsPanel {
 
         // == ПРАВО: инфа, кнопка ==
         nameLabel = new JLabel();
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        nameLabel.setForeground(new Color(35, 50, 120));
+        nameLabel.setFont(Design.getBigFont());
+        nameLabel.setForeground(new Color(45, 56, 61));
         nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         infoPane = new JTextPane();
         infoPane.setEditable(false);
         infoPane.setContentType("text/html");
-        infoPane.setBackground(new Color(235, 242, 250));
         infoPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         infoPane.setBorder(null);
         infoPane.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -80,7 +78,6 @@ public class ShopVikingsPanel {
 
         Design.CustomButton btnBuy = new Design.CustomButton("Купить викинга");
         btnBuy.setForeground(Color.WHITE);
-        btnBuy.setFocusPainted(false);
         btnBuy.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // --- Покупка ---
@@ -128,7 +125,6 @@ public class ShopVikingsPanel {
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setBackground(new Color(220, 225, 240));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 22, 16, 22));
 
         mainPanel.add(Box.createVerticalStrut(5));
