@@ -29,7 +29,5 @@ public class City {
     public String getCityType() {return cityType;}
 
     public int getScale() {return scale;}
-    
-    
-    
+   
 }

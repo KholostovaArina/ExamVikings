@@ -10,7 +10,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 public class DrakkarPanel {
-    private static final int MAIN_IMAGE_SIZE = 250, ARROW_SIZE = 50;
+    private static final int MAIN_IMAGE_SIZE = 350, ARROW_SIZE = 50;
 
     private static List<Drakkar> drakkars;
     private static int currentIndex = 0;
@@ -27,7 +27,10 @@ public class DrakkarPanel {
         );
         splitPane.setResizeWeight(0.7);
         splitPane.setDividerLocation(0.7);
-        updateDrakkarDisplay();
+        splitPane.setOpaque(false);
+        Design.makeAllNonOpaque(splitPane);
+        Design.setFontForAllComponents(splitPane, Color.WHITE);
+        updateDrakkarDisplay();   
         return splitPane;
     }
 
@@ -38,9 +41,7 @@ public class DrakkarPanel {
 
         mainImageLabel = new JLabel();
         mainImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        mainImageLabel.setOpaque(true);
-        mainImageLabel.setBackground(new Color(235,242,250));
-        mainImageLabel.setBorder(BorderFactory.createLineBorder(new Color(180,180,200), 2, true));
+        mainImageLabel.setOpaque(false);
         mainImageLabel.setPreferredSize(new Dimension(MAIN_IMAGE_SIZE, MAIN_IMAGE_SIZE));
         imageWrapper.add(mainImageLabel);
 
@@ -60,16 +61,18 @@ public class DrakkarPanel {
         navPanel.add(Box.createHorizontalGlue());
 
         // Кнопка под драккаром
-        JButton selectButton = new JButton("Выбрать этот драккар");
+        Design.CustomButton selectButton = new Design.CustomButton("Выбрать этот драккар");
+        selectButton.setFont(Design.getBaseFont().deriveFont(24f));
         selectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         selectButton.addActionListener(e -> {
             if (drakkars != null && !drakkars.isEmpty()) {
                 SelectionPanel.setSelectedDrakkar(drakkars.get(currentIndex));
             }
         });
+        
 
         // обновление
-        reloadButton = new JButton("Обновить");
+        Design.CustomButton reloadButton = new Design.CustomButton("Обновить");
         reloadButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         reloadButton.addActionListener(e -> {
             drakkars = DrakkarLoader.loadDrakkars();
@@ -83,14 +86,16 @@ public class DrakkarPanel {
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(new Color(220, 225, 240));
         panel.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
         panel.add(Box.createVerticalGlue());
         panel.add(navPanel);
         panel.add(Box.createRigidArea(new Dimension(0, 24)));
         panel.add(selectButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 24)));
         panel.add(reloadButton);
         panel.add(Box.createVerticalGlue());
+        panel.setOpaque(false);
+        Design.setFontForAllComponents(panel, Color.WHITE);
         return panel;
     }
 
@@ -108,25 +113,25 @@ public class DrakkarPanel {
 
     private static JPanel createInfoPanel() {
         nameLabel = new JLabel("", SwingConstants.CENTER);
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        nameLabel.setForeground(new Color(30, 53, 102));
+        nameLabel.setFont(Design.getBigFont().deriveFont(20f));
+                
 
         descriptionPane = new JTextPane();
         descriptionPane.setEditable(false);
         descriptionPane.setContentType("text/html");
-        descriptionPane.setBackground(new Color(235,242,250));
         descriptionPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         descriptionPane.setBorder(null);
+        descriptionPane.setOpaque(false);
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(new Color(235,242,250));
         panel.setBorder(BorderFactory.createEmptyBorder(32, 24, 32, 24));
         panel.add(nameLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 24)));
         panel.add(descriptionPane);
         panel.add(Box.createVerticalGlue());
+        panel.setOpaque(false);
         return panel;
     }
 
@@ -139,7 +144,7 @@ public class DrakkarPanel {
     if (drakkars == null || drakkars.isEmpty()) {
         mainImageLabel.setIcon(null);
         nameLabel.setText("Нет драккаров");
-        descriptionPane.setText("<html><div style='font-size:13pt; color:gray;'>Файл drakkars.yml пуст или не найден.</div></html>");
+        descriptionPane.setText("<html><div style='font-size:16pt; color:white;'>Файл drakkars.yml пуст или не найден.</div></html>");
         return;
     }
     Drakkar d = drakkars.get(currentIndex);
@@ -148,8 +153,11 @@ public class DrakkarPanel {
             ? new ImageIcon(image.getScaledInstance(MAIN_IMAGE_SIZE, MAIN_IMAGE_SIZE, Image.SCALE_SMOOTH))
             : placeholderIcon(MAIN_IMAGE_SIZE, "Драккар " + d.getId()));
     nameLabel.setText(d.getName());
+    nameLabel.setFont(Design.getBigFont().deriveFont(20f)); // Берём нужный шрифт
+    nameLabel.setForeground(new Color(200, 220, 255)); // бледно-голубой
+    
     descriptionPane.setText(String.format(
-            "<html><div style='font-size:12pt; color:#2a2a2a; padding-top:10px'>" +
+            "<html><div style='font-size:16pt; color:white; padding-top:10px'>" +
                     "<b>ID:</b> %s<br>" +
                     "<b>Тип:</b> %s<br>" +
                     "<b>Вместимость:</b> %d воинов<br>" +
@@ -171,20 +179,6 @@ public class DrakkarPanel {
         if (capacity >= 30) return "Боевой драккар";
         if (capacity >= 20) return "Торговый драккар";
         return "Разведывательный драккар";
-    }
-
-    // Грузить картинки ресурсов больше не нужно для стрелок,
-    // но оставим для других случаев
-    private static ImageIcon loadImageIcon(String path, int size) {
-        try {
-            if (path == null || path.isEmpty()) return null;
-            var is = DrakkarPanel.class.getResourceAsStream(path.startsWith("/") ? path : "/" + path);
-            if (is == null) return null;
-            Image img = ImageIO.read(is);
-            return img != null ? new ImageIcon(img.getScaledInstance(size, size, Image.SCALE_SMOOTH)) : null;
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     private static ImageIcon placeholderIcon(int size, String txt) {

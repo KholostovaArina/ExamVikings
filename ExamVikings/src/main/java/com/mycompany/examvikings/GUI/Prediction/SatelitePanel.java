@@ -1,24 +1,31 @@
 package com.mycompany.examvikings.GUI.Prediction;
 
+import Design.Design;
 import Entity.Viking;
 import EntityManager.Vikings;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 import javax.swing.*;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
 public class SatelitePanel {
-    private static final int THUMBNAIL_SIZE = 50;
+    private static final int THUMBNAIL_SIZE = 100;
     private static final int MAIN_PHOTO_SIZE = 250;
     private static final int COLUMNS = 5;
     private static final double SPLIT_RATIO = 0.7;
-    
+
     private static JLabel nameLabel;
-    private static JLabel infoLabel;
+    private static JPanel infoPanel;
+    private static JLabel genderInfoLabel;
+    private static JLabel clanInfoLabel;
+    private static JLabel ageInfoLabel;
+    private static JLabel activityInfoLabel;
+    private static JLabel infoHintLabel; // Для стартовой подсказки
     private static JLabel photoLabel;
-    
+
     private static Set<Viking> selectedVikings = new HashSet<>();
     private static JPanel thumbnailsPanel;
     private static JPanel thumbnailsWrapperPanel; // Новое поле для обёртки
@@ -33,8 +40,10 @@ public class SatelitePanel {
 
     private static void initializeComponents() {
         nameLabel = createNameLabel();
-        infoLabel = createInfoLabel();
+        nameLabel.setFont(Design.getBigFont().deriveFont(24f));
+        nameLabel.setForeground(new Color(200, 220, 255));
         photoLabel = createPhotoLabel();
+        createInfoPanel(); // только конфигурируем, сам infoPanel используется дальше
     }
 
     private static JSplitPane createSplitPane(List<Viking> vikings) {
@@ -63,10 +72,10 @@ public class SatelitePanel {
         thumbnailsWrapperPanel = new JPanel(new BorderLayout());
         thumbnailsWrapperPanel.setBackground(new Color(245, 245, 245));
         
-        JLabel title = new JLabel("Спутники (выбрано: " + selectedVikings.size() + ")", SwingConstants.CENTER);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        title.setForeground(new Color(30, 30, 30));
+        JLabel title = new JLabel("Спутники - выбрано: " + selectedVikings.size() , SwingConstants.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(5, 0, 10, 0));
+        title.setFont(Design.getBigFont().deriveFont(24f));
+        title.setForeground(new Color(200, 220, 255));
         
         thumbnailsWrapperPanel.add(title, BorderLayout.NORTH);
         thumbnailsWrapperPanel.add(gridPanel, BorderLayout.CENTER);
@@ -75,17 +84,25 @@ public class SatelitePanel {
     }
 
     private static JButton createThumbnailButton(Viking v) {
+        
+  String photoPath = v.getPhotoPath();
+   System.out.println("photoPath = " + photoPath);
+   
+
+        
         JButton button = new JButton();
         button.setPreferredSize(new Dimension(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
         button.setToolTipText(v.getName());
-        
         button.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
         button.setFocusPainted(false);
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        // Загрузка изображения
-        ImageIcon icon = new ImageIcon(v.getPhotoMiniPath());
-        if (icon.getImageLoadStatus() == MediaTracker.COMPLETE) {
+        // Загружаем иконку через ресурс
+        String photoMiniPath = v.getPhotoMiniPath(); // Например, "/викинги/викинг1.png"
+        URL imgUrl = SatelitePanel.class.getResource(photoMiniPath);
+
+        if (imgUrl != null) {
+            ImageIcon icon = new ImageIcon(imgUrl);
             button.setIcon(resizeIcon(icon, THUMBNAIL_SIZE, THUMBNAIL_SIZE));
         } else {
             button.setIcon(new ImageIcon(createPlaceholderImage()));
@@ -105,6 +122,7 @@ public class SatelitePanel {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 button.setBorder(BorderFactory.createLineBorder(new Color(100, 150, 255)));
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 updateButtonAppearance(button, v);
             }
@@ -134,7 +152,7 @@ public class SatelitePanel {
 
     private static void updateThumbnailsTitle() {
         JLabel title = (JLabel)((BorderLayout)thumbnailsWrapperPanel.getLayout()).getLayoutComponent(BorderLayout.NORTH);
-        title.setText("Спутники (выбрано: " + selectedVikings.size() + ")");
+        title.setText("Спутники - выбрано: " + selectedVikings.size() );
     }
 
     private static Image createPlaceholderImage() {
@@ -145,7 +163,7 @@ public class SatelitePanel {
         g2d.setColor(new Color(180, 180, 180));
         g2d.drawRect(0, 0, THUMBNAIL_SIZE-1, THUMBNAIL_SIZE-1);
         g2d.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        g2d.drawString("Фото", 10, THUMBNAIL_SIZE/2);
+        g2d.drawString("Фото", 10, THUMBNAIL_SIZE / 2);
         g2d.dispose();
         return img;
     }
@@ -156,16 +174,16 @@ public class SatelitePanel {
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         panel.setBackground(Color.WHITE);
 
-        // Основные компоненты
         panel.add(nameLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 15)));
         panel.add(photoLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // Панель с информацией
-        JScrollPane infoScroll = new JScrollPane(infoLabel);
+        JScrollPane infoScroll = new JScrollPane(createInfoPanel());
         infoScroll.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)));
         infoScroll.setPreferredSize(new Dimension(MAIN_PHOTO_SIZE, 150));
+        infoScroll.getViewport().setBackground(infoPanel.getBackground());
+
         panel.add(infoScroll);
 
         return panel;
@@ -173,7 +191,7 @@ public class SatelitePanel {
 
     private static JLabel createNameLabel() {
         JLabel label = new JLabel("Выберите спутника", SwingConstants.CENTER);
-        label.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        label.setForeground(Color.white);
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         label.setForeground(new Color(40, 50, 50));
         return label;
@@ -183,8 +201,8 @@ public class SatelitePanel {
         JLabel label = new JLabel("", SwingConstants.CENTER);
         label.setPreferredSize(new Dimension(MAIN_PHOTO_SIZE, MAIN_PHOTO_SIZE));
         label.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 220)),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+                BorderFactory.createLineBorder(new Color(200, 200, 220)),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
 
         label.setBackground(new Color(248, 248, 255));
@@ -192,10 +210,36 @@ public class SatelitePanel {
         return label;
     }
 
-    private static JLabel createInfoLabel() {
-        JLabel label = new JLabel(getDefaultInfo(), SwingConstants.CENTER);
-        label.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        label.setForeground(new Color(50, 50, 50));
+    private static JPanel createInfoPanel() {
+        infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setBackground(new Color(70, 80, 90));
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+
+        genderInfoLabel = createDataLabel();
+        clanInfoLabel = createDataLabel();
+        ageInfoLabel = createDataLabel();
+        activityInfoLabel = createDataLabel();
+
+        infoHintLabel = new JLabel("Нажмите на миниатюру спутника, чтобы увидеть подробную информацию");
+        infoHintLabel.setForeground(Color.WHITE);
+        infoHintLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
+        infoHintLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // По-умолчанию — только подсказка
+        infoPanel.add(infoHintLabel);
+        infoPanel.setPreferredSize(new Dimension(MAIN_PHOTO_SIZE, 150));
+
+        return infoPanel;
+    }
+
+    // Утилитарный метод для инфо-лейблов:
+    private static JLabel createDataLabel() {
+        JLabel label = new JLabel();
+        label.setForeground(Color.WHITE);
+        label.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0)); // немного места между строками
         return label;
     }
 
@@ -209,40 +253,44 @@ public class SatelitePanel {
     private static void updateSatelliteInfo(Viking viking) {
         nameLabel.setText(viking.getName());
 
-        // Обновление фото
-        ImageIcon icon = new ImageIcon(viking.getPhotoPath());
-        if (icon.getImageLoadStatus() == MediaTracker.COMPLETE) {
+        // Загружаем фото через ресурс пакета
+        String photoPath = viking.getPhotoPath(); // Например, "/викинги/викинг1.png"
+        URL imgUrl = SatelitePanel.class.getResource(photoPath);
+
+        if (imgUrl != null) {
+            ImageIcon icon = new ImageIcon(imgUrl);
             photoLabel.setIcon(resizeIcon(icon, MAIN_PHOTO_SIZE, MAIN_PHOTO_SIZE));
             photoLabel.setText("");
         } else {
             photoLabel.setIcon(null);
-            photoLabel.setText("<html><div style='text-align:center;'>Фото<br>недоступно</div></html>");
+            photoLabel.setText("Фото недоступно");
+            photoLabel.setForeground(Color.white);
+            photoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            photoLabel.setVerticalAlignment(SwingConstants.CENTER);
         }
 
-        // Обновление информации
-        infoLabel.setText(String.format(
-                "<html><div style='padding:10px; text-align:left;'>"
-                + "<b>Имя:</b> %s<br>"
-                + "<b>Пол:</b> %s<br>"
-                + "<b>Род:</b> %s<br>"
-                + "<b>Возраст:</b> %d лет<br>"
-                + "<b>Коэффициент активности:</b> %.2f</div></html>",
-                viking.getName(),
-                viking.getGender(),
-                viking.getClan(),
-                viking.getAge(),
-                viking.getActivityCoefficient()
-        ));
+
+        // обновляем остальные поля, как у вас
+        infoPanel.removeAll();
+        genderInfoLabel.setText("Пол: " + viking.getGender());
+        clanInfoLabel.setText("Род: " + viking.getClan());
+        ageInfoLabel.setText("Возраст: " + viking.getAge() + " лет");
+        activityInfoLabel.setText("Коэффициент активности: " + String.format("%.2f", viking.getActivityCoefficient()));
+
+        infoPanel.add(genderInfoLabel);
+        infoPanel.add(clanInfoLabel);
+        infoPanel.add(ageInfoLabel);
+        infoPanel.add(activityInfoLabel);
+
+        Design.setFontForAllComponents(infoPanel, Color.white);
+
+        infoPanel.revalidate();
+        infoPanel.repaint();
     }
 
     private static ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
         Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
-    }
-
-    private static String getDefaultInfo() {
-        return "<html><div style='text-align:center; padding:20px;'>"
-                + "Нажмите на миниатюру спутника,<br>чтобы увидеть подробную информацию</div></html>";
     }
 
     public static void refreshVikingsList() {
@@ -268,5 +316,4 @@ public class SatelitePanel {
         thumbnailsWrapperPanel.revalidate();
         thumbnailsWrapperPanel.repaint();
     }
-
 }

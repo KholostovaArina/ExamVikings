@@ -11,7 +11,9 @@ public class Design {
     private static Image rightImage;
     private static Image leftImage;
     private static Image firstImage;
-    private static Image astraImage;        
+    private static Image astraImage; 
+    private static Image mapImage; 
+    private static Image rightPanelImage; 
     
     static {
         try {
@@ -19,7 +21,8 @@ public class Design {
             leftImage = ImageIO.read(Design.class.getResourceAsStream("/лево.png"));
             firstImage = ImageIO.read(Design.class.getResourceAsStream("/море.jpg"));
             astraImage = ImageIO.read(Design.class.getResourceAsStream("/Astra.png"));
-            
+            mapImage = ImageIO.read(Design.class.getResourceAsStream("/карта.png"));
+            rightPanelImage = ImageIO.read(Design.class.getResourceAsStream("/праваяПанелька.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,10 +44,18 @@ public class Design {
     static {
         try (InputStream fontStream = Design.class.getResourceAsStream("/baseFont.otf")) {
             baseFont = Font.createFont(Font.TRUETYPE_FONT, fontStream);
-            baseFont = baseFont.deriveFont(Font.BOLD, 22);
+            baseFont = baseFont.deriveFont(Font.BOLD, 18);
         } catch (IOException | FontFormatException e) {
             baseFont = new Font("Serif", Font.PLAIN, 18);
         }
+    }
+
+    public static Image getRightPanelImage() {
+        return rightPanelImage;
+    }
+
+    public static Image getMapImage() {
+        return mapImage;
     }
 
     public static Font getBigFont() {
@@ -88,6 +99,30 @@ public class Design {
         return backgroundPanel;
     }
         
+    public static void setFontForAllComponents(Container container) {
+        for (Component component : container.getComponents()) {
+            component.setFont(baseFont);
+           // component.setForeground( new Color(45, 56, 61));
+            
+            if (component instanceof Container) {
+                Container container1 = (Container) component;
+                setFontForAllComponents(container1);
+            }
+        }
+    }
+
+    public static void setFontForAllComponents(Container container, Color color) {
+        for (Component component : container.getComponents()) {
+            component.setFont(baseFont);
+            component.setForeground(color);
+
+            if (component instanceof Container) {
+                Container container1 = (Container) component;
+                setFontForAllComponents(container1);
+            }
+        }
+    }
+
         
         
     // Внутренний класс кастомной кнопки с эффектами hover/press
@@ -150,5 +185,16 @@ public class Design {
             // Текст рисуем поверх кастомного фона
             super.paintComponent(g);
         }
-    }    
+    }
+
+    public static void makeAllNonOpaque(Container container) {
+        for (Component comp : container.getComponents()) {
+            if (comp instanceof JComponent jComp) {
+                jComp.setOpaque(false);
+            }
+            if (comp instanceof Container cont) {
+                makeAllNonOpaque(cont);
+            }
+        }
+    }
 }

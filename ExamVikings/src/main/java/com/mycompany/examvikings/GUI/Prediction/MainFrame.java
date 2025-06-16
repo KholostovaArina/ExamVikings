@@ -1,13 +1,12 @@
 package com.mycompany.examvikings.GUI.Prediction;
 
-import Entity.Viking;
+import Design.Design;
 import EntityManager.Vikings;
 import com.mycompany.examvikings.GUI.HomeScreen;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 public class MainFrame {
     private static JPanel cardPanel;
@@ -16,6 +15,9 @@ public class MainFrame {
 
     public static void createMainFrame() {
         JFrame frame = new JFrame("Система планировщика набегов викингов");
+        
+        frame.getContentPane().setBackground(new Color(45,56,61));
+        
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -34,6 +36,7 @@ public class MainFrame {
                 SelectionPanel.createRightPanel());
         mainSplitPane.setResizeWeight(0.7);
         mainSplitPane.setDividerLocation(0.7);
+        mainSplitPane.setOpaque(false);
 
         frame.add(mainSplitPane);
         frame.setVisible(true);
@@ -46,6 +49,7 @@ public class MainFrame {
         // Панель для карточек
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
+        cardPanel.setOpaque(false);
         cardPanel.add(DrakkarPanel.create(), "DRAKKAR");
         cardPanel.add(SatelitePanel.create(Vikings.getAllVikings()), "SATELLITE");
         cardPanel.add(RoutePanel.create(), "ROUTE");
@@ -53,9 +57,9 @@ public class MainFrame {
         
         // Нижняя панель с кнопками "Назад" и "Далее"
         JPanel bottomLeftPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        JButton buttonBack = new JButton("Назад");
-        JButton buttonNext = new JButton("Далее");
-
+        Design.CustomButton buttonBack = new Design.CustomButton("Назад");
+        Design.CustomButton buttonNext = new Design.CustomButton("Далее"); 
+        
         updateNavigationButtons(buttonBack, buttonNext, "DRAKKAR");
 
         buttonBack.addActionListener(getNavigationAction(buttonBack, buttonNext, false));
@@ -63,10 +67,15 @@ public class MainFrame {
 
         bottomLeftPanel.add(buttonBack);
         bottomLeftPanel.add(buttonNext);
+        bottomLeftPanel.setOpaque(false);
+        Design.setFontForAllComponents(bottomLeftPanel, Color.white);
 
         // Добавляем всё в основную левую панель
         mainLeftPanel.add(cardPanel, BorderLayout.CENTER);
         mainLeftPanel.add(bottomLeftPanel, BorderLayout.SOUTH);
+        mainLeftPanel.setOpaque(false);
+        
+        Design.makeAllNonOpaque(mainLeftPanel);
 
         return mainLeftPanel;
     }

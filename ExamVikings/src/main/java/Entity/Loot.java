@@ -16,6 +16,5 @@ public class Loot {
     public String getType() {
         return type;
     }
-    
-    
+   
 }

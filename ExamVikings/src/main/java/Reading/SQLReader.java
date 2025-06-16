@@ -45,6 +45,8 @@ public class SQLReader {
                 double activityCoefficient = rs.getDouble("activity_coefficient");
                 String photoMiniPath = rs.getString("photo_mini_path");
                 String photoPath = rs.getString("photo_path");
+             System.out.println("photo_mini_path" + photoMiniPath);
+             System.out.println("photo_path"+photoPath);
 
                 vikings.add(new Viking(id, name, gender, clan, age, activityCoefficient, photoMiniPath, photoPath));
             }

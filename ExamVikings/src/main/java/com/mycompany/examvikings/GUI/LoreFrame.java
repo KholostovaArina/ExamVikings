@@ -64,7 +64,7 @@ public class LoreFrame extends JFrame {
 
         // Кнопка 
         Design.CustomButton startButton = new Design.CustomButton("Далее");
-        startButton.setFont(Design.getBaseFont());
+        startButton.setFont(Design.getBaseFont().deriveFont(24f));
         startButton.setForeground(Color.WHITE);
         startButton.setMaximumSize(new Dimension(200, 50));
         startButton.setAlignmentX(Component.CENTER_ALIGNMENT);

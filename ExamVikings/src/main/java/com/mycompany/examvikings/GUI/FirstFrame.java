@@ -22,7 +22,7 @@ public class FirstFrame extends JFrame {
         // Заголовок по центру
         JLabel titleLabel = new JLabel("Пророчество Викингов", SwingConstants.CENTER);
         titleLabel.setFont(Design.getBigFont());
-        titleLabel.setForeground(new Color(230, 102, 24));
+        titleLabel.setForeground(new Color(45, 56, 61));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(titleLabel);
 
@@ -44,7 +44,7 @@ public class FirstFrame extends JFrame {
 
         // Кнопка по центру
         Design.CustomButton startButton = new Design.CustomButton("Начать");
-        startButton.setFont(Design.getBaseFont());
+        startButton.setFont(Design.getBaseFont().deriveFont(24f));
         startButton.setForeground(Color.WHITE);
         startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         startButton.setMaximumSize(new Dimension(250, 100));

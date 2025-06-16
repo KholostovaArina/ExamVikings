@@ -1,10 +1,10 @@
 package com.mycompany.examvikings.GUI.Prediction;
 
+import Design.Design;
 import EntityManager.Cities;
 import Entity.City;
 import Entity.Drakkar;
 import Entity.Viking;
-import com.mycompany.examvikings.*;
 import com.mycompany.examvikings.GUI.ReportFrame;
 import java.awt.*;
 import java.util.List;
@@ -21,25 +21,36 @@ public class SelectionPanel {
 
     public static Component createRightPanel() {
         JScrollPane scrollRightPanel = new JScrollPane();
-        JPanel rightPanel = new JPanel(new BorderLayout());
+        scrollRightPanel.setOpaque(false);
+        JPanel rightPanel = Design.createPanelWithPhoto(Design.getRightPanelImage());
 
         JPanel infoPanel = new JPanel();
+        infoPanel.setOpaque(false);
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-        infoPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(70, 25, 20, 40));
+        
 
-        infoPanel.add(new JLabel("Выбранный элемент:"));
+        JLabel mainLabel = new JLabel("Выбранный элемент:");
+        mainLabel.setFont(Design.getBaseFont().deriveFont(14f));
+        infoPanel.add(mainLabel);
         infoPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         drakkarLabel = new JLabel("Драккар: не выбран");
+        drakkarLabel.setFont(Design.getBaseFont().deriveFont(14f));
         satelliteLabel = new JLabel("Спутник: не выбран");
+        satelliteLabel.setFont(Design.getBaseFont().deriveFont(14f));
         routeLabel = new JLabel("Маршрут: не выбран");
+        routeLabel.setFont(Design.getBaseFont().deriveFont(14f));
 
         infoPanel.add(drakkarLabel);
         infoPanel.add(satelliteLabel);
         infoPanel.add(routeLabel);
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton buttonReady = new JButton("Готово");
+        bottomPanel.setOpaque(false);
+        Design.CustomButton buttonReady = new Design.CustomButton("Готово");
+        buttonReady.setForeground(Color.WHITE);
+        buttonReady.setFont(Design.getBaseFont().deriveFont(18f));
         buttonReady.addActionListener(e -> {
             if (selectedDrakkar == null){
                 JOptionPane.showMessageDialog(

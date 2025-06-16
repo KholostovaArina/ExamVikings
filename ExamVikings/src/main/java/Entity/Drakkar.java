@@ -59,6 +59,4 @@ public class Drakkar {
         }
        return image; 
     }
-
 }
-

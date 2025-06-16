@@ -20,7 +20,7 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.33</version> <!-- или актуальная версия -->
+            <version>1.33</version> 
         </dependency>
     </dependencies>
     <build>
