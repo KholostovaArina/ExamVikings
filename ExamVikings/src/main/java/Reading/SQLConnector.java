@@ -35,4 +35,11 @@ public class SQLConnector {
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
+    
+    /**
+     * Конструктор по умолчанию.
+     */
+    public SQLConnector() {
+        // конструктор
+    }
 }

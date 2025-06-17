@@ -32,6 +32,14 @@ public class RoutePanel {
     private static JPanel infoPanel; // Снаружи всех методов
 
     private static RouteLineComponent routeLineComponent; // Для обновления маршрута
+    
+    /**
+     * Конструктор по умолчанию.
+     * Используется только Swing для создания UI.
+     */
+    public RoutePanel() {
+        // конструктор
+    }
 
     /**
      * Создаёт и возвращает панель маршрута. Эта панель используется при

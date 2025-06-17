@@ -47,6 +47,14 @@ public class SelectionPanel {
      * Множество викингов, выбранных для участия в набеге.
      */
     public static Set<Viking> selectedVikings = new HashSet<>();
+    
+    /**
+     * Конструктор по умолчанию.
+     * Используется только Swing для создания UI.
+     */
+    public SelectionPanel() {
+        // конструктор
+    }
 
     /**
      * Создаёт и возвращает правую панель с информацией о выбранных элементах:

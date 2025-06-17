@@ -10,6 +10,13 @@ import java.util.List;
 public class DrakkarConfig {
     
     /**
+     * Конструктор по умолчанию.
+     */
+    public DrakkarConfig() {
+        // конструктор
+    }
+    
+    /**
      * Список драккаров, загруженных из конфигурационного файла.
      */
     private List<Drakkar> drakkars;

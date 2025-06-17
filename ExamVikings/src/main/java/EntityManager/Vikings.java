@@ -13,6 +13,13 @@ import java.util.List;
 public class Vikings {
     
     /**
+     * Конструктор по умолчанию.
+     */
+    public Vikings() {
+        // конструктор
+    }
+    
+    /**
      * Список всех викингов, загруженных из базы данных.
      */
     private static final List<Viking> allVikings = SQLReader.readVikings();

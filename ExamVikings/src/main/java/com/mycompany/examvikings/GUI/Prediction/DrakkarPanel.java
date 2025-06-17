@@ -59,6 +59,15 @@ public class DrakkarPanel {
      * Основная панель с разделением на части (image + info).
      */
     public static JSplitPane splitPane;
+    
+    /**
+     * Конструктор по умолчанию.
+     * Используется только Swing для создания UI.
+     */
+    public DrakkarPanel() {
+        // конструктор
+    }
+    
 
     /**
      * Создаёт и возвращает панель с интерфейсом выбора драккара.

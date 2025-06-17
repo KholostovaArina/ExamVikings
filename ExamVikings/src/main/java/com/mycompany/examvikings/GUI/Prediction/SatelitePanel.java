@@ -37,6 +37,14 @@ public class SatelitePanel {
     private static JPanel thumbnailsWrapperPanel; // Новое поле для обёртки
     private static List<Viking> allVikings;
     private static Viking currentlyDisplayedViking;
+    
+    /**
+     * Конструктор по умолчанию.
+     * Используется только Swing для создания UI.
+     */
+    public SatelitePanel() {
+        // конструктор
+    }
 
     /**
      * Создаёт и возвращает разделённую панель (JSplitPane) для выбора викингов.
