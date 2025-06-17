@@ -55,6 +55,7 @@ public class HomeScreen extends JFrame {
             new HistoryAttacks().setVisible(true);
             setVisible(false);
         });
+        panel.add(Box.createVerticalStrut(70));
         historyButton.setForeground(Color.WHITE);
         historyButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         historyButton.setMaximumSize(new Dimension(400, 100));
